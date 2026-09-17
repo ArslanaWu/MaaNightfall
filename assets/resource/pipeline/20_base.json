@@ -1,0 +1,134 @@
+{
+    "Base_OpenRoom": {
+        "recognition": "OCR",
+        "expected": "据点",
+        "roi": [850, 570, 150, 130],
+        "action": "Click",
+        "target": [940, 645],
+        "post_delay": 1000,
+        "next": ["Base_CollectProduction", "Base_OpenOrders"]
+    },
+    "Base_CollectProduction": {
+        "recognition": "OCR",
+        "expected": ["一键领取", "键领取"],
+        "roi": [1080, 410, 200, 160],
+        "action": "Click",
+        "post_delay": 800,
+        "next": "Base_RestartProduction"
+    },
+    "Base_RestartProduction": {
+        "recognition": "OCR",
+        "expected": "再次生产",
+        "action": "Click",
+        "post_delay": 800,
+        "next": ["Base_CloseTargetValue", "Base_OpenOrders"]
+    },
+    "Base_CloseTargetValue": {
+        "recognition": "OCR",
+        "expected": "目标价值",
+        "action": "Click",
+        "target": [640, 650],
+        "next": "Base_OpenOrders"
+    },
+    "Base_OpenOrders": {
+        "recognition": "TemplateMatch",
+        "template": "base/order_icon.png",
+        "roi": [750, 500, 220, 200],
+        "action": "Click",
+        "post_delay": 800,
+        "next": "Base_OrderProcess"
+    },
+    "Base_OrderProcess": {
+        "next": [
+            "Base_FirstStillPresent",
+            "Base_SecondOrderProcess"
+        ]
+    },
+    "Base_FirstStillPresent": {
+        "recognition": "OCR",
+        "expected": "特供订单",
+        "roi": [80, 130, 270, 130],
+        "next": "Base_FirstAction"
+    },
+    "Base_FirstAction": {
+        "timeout": 3500,
+        "next": [
+            "Base_FirstSubmit",
+            "Base_FirstRefresh"
+        ],
+        "on_error": "Base_OrderProcess"
+    },
+    "Base_FirstSubmit": {
+        "recognition": "OCR",
+        "expected": "提交",
+        "roi": [115, 510, 205, 85],
+        "action": "Click",
+        "max_hit": 28,
+        "post_delay": 700,
+        "next": "Base_OrderProcess"
+    },
+    "Base_FirstRefresh": {
+        "recognition": "OCR",
+        "expected": "前往",
+        "roi": [115, 510, 205, 85],
+        "action": "Click",
+        "target": [294, 255],
+        "max_hit": 28,
+        "post_delay": 500,
+        "next": "Base_OrderProcess"
+    },
+    "Base_SecondOrderProcess": {
+        "next": [
+            "Base_SecondStillPresent",
+            "Base_LeaveOrders"
+        ]
+    },
+    "Base_SecondStillPresent": {
+        "recognition": "OCR",
+        "expected": "专项订单",
+        "roi": [80, 130, 520, 130],
+        "next": "Base_SecondAction"
+    },
+    "Base_SecondAction": {
+        "timeout": 3500,
+        "next": [
+            "Base_SecondSubmit",
+            "Base_SecondRefresh"
+        ],
+        "on_error": "Base_SecondOrderProcess"
+    },
+    "Base_SecondSubmit": {
+        "recognition": "OCR",
+        "expected": "提交",
+        "roi": [115, 510, 205, 85],
+        "action": "Click",
+        "max_hit": 28,
+        "post_delay": 700,
+        "next": "Base_SecondOrderProcess"
+    },
+    "Base_SecondRefresh": {
+        "recognition": "OCR",
+        "expected": "前往",
+        "roi": [115, 510, 205, 85],
+        "action": "Click",
+        "target": [294, 255],
+        "max_hit": 28,
+        "post_delay": 500,
+        "next": "Base_SecondOrderProcess"
+    },
+    "Base_LeaveOrders": {
+        "action": "Click",
+        "target": [45, 40],
+        "post_delay": 800,
+        "next": "Base_ReturnHome"
+    },
+    "Base_ReturnHome": {
+        "recognition": "TemplateMatch",
+        "template": "base/order_icon.png",
+        "roi": [750, 500, 220, 200],
+        "action": "Click",
+        "target": [156, 40],
+        "post_delay": 1200,
+        "next": "Dispatch_OpenBusiness"
+    }
+}

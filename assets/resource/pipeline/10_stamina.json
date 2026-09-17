@@ -1,0 +1,106 @@
+{
+    "Stamina_OpenFamilyAffairs": {
+        "recognition": "OCR",
+        "expected": "家族事务",
+        "roi": [950, 250, 300, 170],
+        "action": "Click",
+        "target": [1110, 350],
+        "post_delay": 1000,
+        "next": "Stamina_OpenSupplies"
+    },
+    "Stamina_OpenSupplies": {
+        "recognition": "OCR",
+        "expected": "物资",
+        "roi": [0, 500, 1280, 220],
+        "action": "Click",
+        "post_delay": 800,
+        "next": "Stamina_ScrollSuppliesRight"
+    },
+    "Stamina_ScrollSuppliesRight": {
+        "action": "Swipe",
+        "begin": [1080, 360],
+        "end": [180, 360],
+        "duration": 700,
+        "repeat": 3,
+        "repeat_delay": 500,
+        "post_delay": 800,
+        "next": "Stamina_OpenFamilyRuins"
+    },
+    "Stamina_OpenFamilyRuins": {
+        "recognition": "OCR",
+        "expected": "家族",
+        "roi": [400, 130, 300, 200],
+        "action": "Click",
+        "post_delay": 800,
+        "next": "Stamina_OpenCastleEcho"
+    },
+    "Stamina_OpenCastleEcho": {
+        "recognition": "OCR",
+        "expected": "古堡回声",
+        "roi": [880, 470, 370, 190],
+        "action": "Click",
+        "post_delay": 800,
+        "next": "Stamina_OpenStage"
+    },
+    "Stamina_OpenStage": {
+        "recognition": "OCR",
+        "expected": "古堡回声",
+        "roi": [40, 530, 260, 130],
+        "action": "Click",
+        "next": "Stamina_ClickSweep"
+    },
+    "Stamina_ClickSweep": {
+        "recognition": "OCR",
+        "expected": "扫荡",
+        "roi": [650, 500, 600, 200],
+        "action": "Click",
+        "timeout": 8000,
+        "next": ["Stamina_SweepDialog", "Stamina_Insufficient"],
+        "on_error": "Stamina_ReturnHome"
+    },
+    "Stamina_SweepDialog": {
+        "recognition": "OCR",
+        "expected": "扫荡次数",
+        "action": "Click",
+        "target": [956, 347],
+        "post_delay": 500,
+        "next": "Stamina_ConfirmSweep"
+    },
+    "Stamina_ConfirmSweep": {
+        "recognition": "OCR",
+        "expected": "扫荡",
+        "roi": [780, 450, 240, 90],
+        "action": "Click",
+        "post_delay": 1200,
+        "next": ["Stamina_CloseLootDetails", "Stamina_CloseAcquired"]
+    },
+    "Stamina_CloseLootDetails": {
+        "recognition": "OCR",
+        "expected": ["连续扫荡奖励", "扫荡完成"],
+        "action": "Click",
+        "target": [640, 650],
+        "timeout": 3000,
+        "next": "Stamina_CloseAcquired",
+        "on_error": "Stamina_ReturnHome"
+    },
+    "Stamina_CloseAcquired": {
+        "recognition": "OCR",
+        "expected": "获得物品",
+        "action": "Click",
+        "target": [640, 650],
+        "next": "Stamina_ReturnHome"
+    },
+    "Stamina_Insufficient": {
+        "recognition": "OCR",
+        "expected": ["体力不足", "行动力不足"],
+        "action": "Click",
+        "target": [640, 650],
+        "next": "Stamina_ReturnHome"
+    },
+    "Stamina_ReturnHome": {
+        "action": "Click",
+        "target": [156, 40],
+        "post_delay": 1200,
+        "next": "Base_OpenRoom"
+    }
+}

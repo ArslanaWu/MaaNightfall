@@ -1,0 +1,126 @@
+{
+    "Dispatch_OpenBusiness": {
+        "recognition": "OCR",
+        "expected": "业务",
+        "roi": [1020, 570, 150, 130],
+        "action": "Click",
+        "target": [1090, 645],
+        "post_delay": 800,
+        "next": "Dispatch_OpenSecretDispatch"
+    },
+    "Dispatch_OpenSecretDispatch": {
+        "recognition": "OCR",
+        "expected": "秘密派遣",
+        "roi": [0, 50, 520, 300],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": "Dispatch_Loop"
+    },
+    "Dispatch_Loop": {
+        "next": [
+            "Dispatch_ClaimAll",
+            "Dispatch_CloseAcquired",
+            "Dispatch_OpenRumor",
+            "Dispatch_CloseRumor",
+            "Dispatch_TaskReady"
+        ]
+    },
+    "Dispatch_ClaimAll": {
+        "recognition": "OCR",
+        "expected": ["一键领取", "键领取"],
+        "roi": [930, 560, 320, 140],
+        "action": "Click",
+        "max_hit": 1,
+        "post_delay": 900,
+        "next": "Dispatch_Loop"
+    },
+    "Dispatch_CloseAcquired": {
+        "recognition": "OCR",
+        "expected": "获得物品",
+        "action": "Click",
+        "target": [640, 650],
+        "post_delay": 500,
+        "next": "Dispatch_Loop"
+    },
+    "Dispatch_OpenRumor": {
+        "recognition": "OCR",
+        "expected": ["获得夜行者传闻", "获得世俗传闻", "点击查看传闻"],
+        "action": "Click",
+        "target": [640, 650],
+        "post_delay": 500,
+        "next": "Dispatch_Loop"
+    },
+    "Dispatch_CloseRumor": {
+        "recognition": "OCR",
+        "expected": ["查看更多夜行者传闻", "查看更多世俗传闻"],
+        "action": "Click",
+        "target": [933, 143],
+        "post_delay": 500,
+        "next": "Dispatch_Loop"
+    },
+    "Dispatch_TaskReady": {
+        "recognition": "OCR",
+        "expected": "任务需求",
+        "roi": [430, 380, 800, 190],
+        "next": [
+            "Dispatch_SelectRow1",
+            "Dispatch_SelectRow2",
+            "Dispatch_SelectRow3",
+            "Dispatch_SelectRow4",
+            "Dispatch_Finish"
+        ]
+    },
+    "Dispatch_SelectRow1": {
+        "action": "Click",
+        "target": [220, 190],
+        "max_hit": 1,
+        "post_delay": 500,
+        "timeout": 2500,
+        "next": "Dispatch_Assign",
+        "on_error": "Dispatch_Loop"
+    },
+    "Dispatch_SelectRow2": {
+        "action": "Click",
+        "target": [220, 300],
+        "max_hit": 1,
+        "post_delay": 500,
+        "timeout": 2500,
+        "next": "Dispatch_Assign",
+        "on_error": "Dispatch_Loop"
+    },
+    "Dispatch_SelectRow3": {
+        "action": "Click",
+        "target": [220, 412],
+        "max_hit": 1,
+        "post_delay": 500,
+        "timeout": 2500,
+        "next": "Dispatch_Assign",
+        "on_error": "Dispatch_Loop"
+    },
+    "Dispatch_SelectRow4": {
+        "action": "Click",
+        "target": [220, 520],
+        "max_hit": 1,
+        "post_delay": 500,
+        "timeout": 2500,
+        "next": "Dispatch_Assign",
+        "on_error": "Dispatch_Loop"
+    },
+    "Dispatch_Assign": {
+        "recognition": "OCR",
+        "expected": ["一键指派", "键指派"],
+        "roi": [930, 560, 320, 140],
+        "action": "Click",
+        "target": [1100, 650],
+        "repeat": 2,
+        "repeat_delay": 500,
+        "post_delay": 900,
+        "next": "Dispatch_Loop"
+    },
+    "Dispatch_Finish": {
+        "action": "Click",
+        "target": [156, 40],
+        "post_delay": 1200,
+        "next": "Briefing_OpenBusiness"
+    }
+}

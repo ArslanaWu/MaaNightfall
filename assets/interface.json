@@ -1,0 +1,29 @@
+{
+    "interface_version": 2,
+    "name": "MaaYMZX",
+    "description": "《夜幕之下》日常任务自动化助手",
+    "license": "MIT",
+    "welcome": "请使用 1600×900、DPI 320 的横屏模拟器。首次运行前请确认游戏已经登录。",
+    "version": "0.1.0",
+    "controller": [
+        {
+            "name": "MuMu 模拟器",
+            "type": "Adb",
+            "display_short_side": 720
+        }
+    ],
+    "resource": [
+        {
+            "name": "官服",
+            "path": [
+                "./resource"
+            ]
+        }
+    ],
+    "task": [
+        {
+            "name": "一键日常",
+            "entry": "DailyRoutine"
+        }
+    ]
+}

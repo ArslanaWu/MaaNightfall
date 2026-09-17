@@ -1,0 +1,72 @@
+{
+    "Rewards_OpenPlan": {
+        "recognition": "OCR",
+        "expected": "计划",
+        "roi": [20, 300, 180, 150],
+        "action": "Click",
+        "target": [80, 370],
+        "next": "Rewards_OpenTasks"
+    },
+    "Rewards_OpenTasks": {
+        "recognition": "OCR",
+        "expected": "任务",
+        "roi": [20, 80, 180, 150],
+        "action": "Click",
+        "post_delay": 900,
+        "next": "Rewards_DailyReady"
+    },
+    "Rewards_DailyReady": {
+        "recognition": "OCR",
+        "expected": "日常任务",
+        "roi": [600, 30, 300, 100],
+        "next": ["Rewards_ClaimDaily", "Rewards_OpenWeekly"]
+    },
+    "Rewards_ClaimDaily": {
+        "recognition": "OCR",
+        "expected": ["一键领取", "键领取"],
+        "roi": [900, 570, 350, 130],
+        "action": "Click",
+        "max_hit": 1,
+        "post_delay": 800,
+        "next": ["Rewards_CloseAcquiredAfterDaily", "Rewards_OpenWeekly"]
+    },
+    "Rewards_CloseAcquiredAfterDaily": {
+        "recognition": "OCR",
+        "expected": "获得物品",
+        "action": "Click",
+        "target": [640, 650],
+        "next": "Rewards_OpenWeekly"
+    },
+    "Rewards_OpenWeekly": {
+        "recognition": "OCR",
+        "expected": "周常任务",
+        "roi": [880, 30, 340, 100],
+        "action": "Click",
+        "post_delay": 800,
+        "next": ["Rewards_ClaimWeekly", "Rewards_WeeklyAlreadyDone"]
+    },
+    "Rewards_ClaimWeekly": {
+        "recognition": "OCR",
+        "expected": ["一键领取", "键领取"],
+        "roi": [900, 570, 350, 130],
+        "action": "Click",
+        "max_hit": 1,
+        "post_delay": 800,
+        "next": ["Rewards_CloseAcquiredAfterWeekly", "Rewards_Finish"]
+    },
+    "Rewards_CloseAcquiredAfterWeekly": {
+        "recognition": "OCR",
+        "expected": "获得物品",
+        "action": "Click",
+        "target": [640, 650],
+        "next": "Rewards_Finish"
+    },
+    "Rewards_WeeklyAlreadyDone": {
+        "recognition": "OCR",
+        "expected": ["已完成每周任务", "已领取全部奖励", "已达成"],
+        "next": "Rewards_Finish"
+    },
+    "Rewards_Finish": {
+        "next": "SuccessExit"
+    }
+}

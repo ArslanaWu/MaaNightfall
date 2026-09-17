@@ -1,0 +1,98 @@
+{
+    "DailyRoutine": {
+        "action": "StartApp",
+        "package": "com.bmystu.peng.gw",
+        "post_delay": 6000,
+        "next": [
+            "Startup_RestartRequired",
+            "Startup_TapToEnter",
+            "Startup_GameAnnouncement",
+            "Startup_HomeLayerDetected"
+        ]
+    },
+    "Startup_HomeLayerDetected": {
+        "recognition": "OCR",
+        "expected": "业务",
+        "roi": [980, 570, 150, 130],
+        "next": "Startup_ClearPopups"
+    },
+    "Startup_ClearPopups": {
+        "action": "Click",
+        "target": [640, 680],
+        "repeat": 10,
+        "repeat_delay": 700,
+        "post_delay": 800,
+        "next": "Startup_HomeReady"
+    },
+    "Startup_HomeReady": {
+        "recognition": "OCR",
+        "expected": "业务",
+        "roi": [980, 570, 150, 130],
+        "next": "Stamina_OpenFamilyAffairs"
+    },
+    "Startup_GameAnnouncement": {
+        "recognition": "OCR",
+        "expected": ["游戏公告", "活动公告"],
+        "roi": [70, 80, 400, 180],
+        "action": "Click",
+        "target": [1172, 122],
+        "post_delay": 800,
+        "next": [
+            "Startup_RestartRequired",
+            "Startup_GameAnnouncement",
+            "Startup_TapToEnter",
+            "Startup_HomeLayerDetected"
+        ]
+    },
+    "Startup_TapToEnter": {
+        "recognition": "OCR",
+        "expected": ["点击进入", "开始游戏", "夜行启程"],
+        "action": "Click",
+        "post_delay": 3000,
+        "next": [
+            "Startup_RestartRequired",
+            "Startup_GameAnnouncement",
+            "Startup_HomeLayerDetected"
+        ]
+    },
+    "Startup_RestartRequired": {
+        "recognition": "OCR",
+        "expected": "请重启游戏",
+        "roi": [400, 250, 500, 180],
+        "action": "Click",
+        "target": [900, 496],
+        "post_delay": 3000,
+        "next": "Startup_RelaunchAfterUpdate"
+    },
+    "Startup_RelaunchAfterUpdate": {
+        "action": "StartApp",
+        "package": "com.bmystu.peng.gw",
+        "post_delay": 6000,
+        "next": [
+            "Startup_RestartRequired",
+            "Startup_TapToEnter",
+            "Startup_GameAnnouncement",
+            "Startup_HomeLayerDetected"
+        ]
+    },
+    "SuccessExit": {
+        "action": "StopApp",
+        "package": "com.bmystu.peng.gw",
+        "on_error": "AbortTask"
+    },
+    "KeepGameOpenFinish": {
+        "action": "DoNothing"
+    },
+    "FatalExit": {
+        "action": "StopApp",
+        "package": "com.bmystu.peng.gw",
+        "next": "AbortTask",
+        "on_error": "AbortAfterStopFailure"
+    },
+    "AbortTask": {
+        "action": "StopTask"
+    },
+    "AbortAfterStopFailure": {
+        "action": "StopTask"
+    }
+}
