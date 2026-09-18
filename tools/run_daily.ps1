@@ -17,17 +17,8 @@ if (-not (Test-Path -LiteralPath $adbExe -PathType Leaf)) {
     exit 2
 }
 
-$nodeCommand = Get-Command node.exe -ErrorAction SilentlyContinue
-if ($nodeCommand) {
-    $nodeExe = $nodeCommand.Source
-}
-else {
-    $nodeExe = Join-Path $env:USERPROFILE '.cache\codex-runtimes\codex-primary-runtime\dependencies\node\bin\node.exe'
-    if (-not (Test-Path -LiteralPath $nodeExe -PathType Leaf)) {
-        Write-Error 'Node.js was not found. Install Node.js 20 or later.'
-        exit 3
-    }
-}
+. (Join-Path $PSScriptRoot 'resolve_node.ps1')
+$nodeExe = Resolve-ProjectNode -ProjectRoot $projectRoot
 
 Set-Location -LiteralPath $projectRoot
 

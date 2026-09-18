@@ -1,7 +1,7 @@
 import {MODULES, MODULE_ORDER, WORK_MODULES, normalizeModules, createExecutionPlan} from './modules.mjs'
 import {registerActions} from './custom_actions.mjs'
 import fs from 'node:fs'
-import os from 'node:os'
+import {findMaaNode} from './runtime.mjs'
 import path from 'node:path'
 import {selectModuleMenu} from './module_menu.mjs'
 import { pathToFileURL } from 'node:url'
@@ -24,27 +24,6 @@ async function selectModules({ interactive }) {
   if (argument) return normalizeModules(argument)
   if (!interactive || !process.stdin.isTTY) return [...MODULE_ORDER]
   return selectModuleMenu(MODULE_ORDER.map(id => ({id, label: MODULES[id].label})))
-}
-
-function findMaaNode() {
-  const installRoot = path.join(os.homedir(), '.maa-tools', 'install')
-  const candidates = ['latest', '5.13.0']
-
-  if (fs.existsSync(installRoot)) {
-    const otherVersions = fs
-      .readdirSync(installRoot, { withFileTypes: true })
-      .filter((item) => item.isDirectory() && !candidates.includes(item.name))
-      .map((item) => item.name)
-      .sort((left, right) => right.localeCompare(left, undefined, { numeric: true }))
-    candidates.push(...otherVersions)
-  }
-
-  for (const version of candidates) {
-    const entry = path.join(installRoot, version, 'node_modules', '@maaxyz', 'maa-node', 'dist', 'index-client.js')
-    if (fs.existsSync(entry)) return entry
-  }
-
-  throw new Error('没有找到 MaaFramework 运行库。请先在项目目录执行：node_modules\\.bin\\maa-tools.cmd check')
 }
 
 function statusName(status) {

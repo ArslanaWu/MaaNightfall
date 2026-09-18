@@ -73,3 +73,6 @@ Desktop.ini
 /docs/.vuepress/.cache/
 /docs/.vuepress/dist/
 /tools/ImageCropper/**/*.png
+
+# Portable release runtimes
+/runtimes/

@@ -27,9 +27,13 @@
         }
     ],
     "agent": {
-        "child_exec": "node",
+        "child_exec": "powershell.exe",
         "child_args": [
-            "{PROJECT_DIR}/../tools/agent_server.mjs"
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            "{PROJECT_DIR}/../tools/run_agent.ps1"
         ]
     }
 }

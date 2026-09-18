@@ -36,7 +36,26 @@ node_modules\.bin\maa-tools.cmd check
 node tools/run_daily.mjs --check
 ```
 
-运行库由 maa-tools 管理，位于用户目录的 `.maa-tools/install/`。当前实机验证版本为 MaaFramework 5.13.0；`maatools.config.mts` 默认使用 latest，升级后需要重新验证兼容性。OCR 模型和运行库不包含在 Git 仓库中。
+源码开发的运行库由 maa-tools 管理，位于用户目录的 `.maa-tools/install/`。当前实机验证版本为 MaaFramework 5.13.0；`maatools.config.mts` 默认使用 latest，升级后需要重新验证兼容性。OCR 模型和运行库不包含在 Git 仓库中。
+
+## 包内运行库
+
+启动器优先使用项目目录中的运行库，路径与当前工作目录无关：
+
+```text
+runtimes/
+├── node/
+│   └── node.exe
+└── maa/
+    └── node_modules/
+        ├── @maaxyz/maa-node/dist/index-client.js
+        ├── @maaxyz/maa-node/dist/index-server.js
+        └── …原生库及其他依赖
+```
+
+Node.js 查找顺序：包内 runtimes/node/node.exe → PATH 中的 node.exe → 原有开发环境备用路径。MaaFramework 查找顺序：包内 runtimes/maa/ → 用户目录 .maa-tools/install/。命令行与通用界面的 Agent 共用这套规则。
+
+准备发行包时需要复制完整的 Maa Node 运行库及其依赖，不能只复制两个入口 JS 文件。包内目录存在但入口缺失时会报错，不会悄悄改用本机其他版本。runtimes/ 不提交到 Git。本次仅支持查找包内运行库，不会自动下载或生成发行包。
 
 ## 使用方式
 
@@ -129,6 +148,7 @@ node tools/task_state.mjs set 你的UID poker 本周已完成次数
 无需连接游戏的基础测试：
 
 ```bat
+node tools/test_runtime.mjs
 node tools/test_module_menu.mjs
 node tools/test_modules.mjs
 node tools/test_weekly_exchange.mjs
@@ -136,7 +156,7 @@ node tools/test_weekly_exchange.mjs
 
 录像回归的素材准备和命令见 [回归测试说明](docs/testing.md)。原始视频、账号截图、抽帧和日志只保存在本地，不随仓库发布。
 
-现有 `.github/workflows/install.yml` 和 `tools/install.py` 继承自项目模板，尚未完整包含本项目 Node Agent 所需脚本和配置。当前请按上述源码方式运行；发布可下载的发行包前，还需要完善打包流程并验证成品。通用界面入口也需要 Node.js 和 Maa Node 运行库。
+现有 `.github/workflows/install.yml` 和 `tools/install.py` 继承自项目模板，尚未完整包含本项目 Node Agent 所需脚本和配置。当前请按上述源码方式运行；发布可下载的发行包前，还需要完善打包流程并验证成品。通用界面入口通过 PowerShell 启动 Agent，同样优先使用包内 Node.js 和 Maa Node 运行库。
 
 ## 当前限制
 
