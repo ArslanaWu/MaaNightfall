@@ -1,0 +1,136 @@
+{
+    "Exchange_Open": {
+        "recognition": "OCR",
+        "expected": "商城",
+        "roi": [
+            20,
+            470,
+            220,
+            130
+        ],
+        "action": "Click",
+        "post_delay": 1200,
+        "next": "Exchange_OpenTab"
+    },
+    "Exchange_OpenTab": {
+        "recognition": "OCR",
+        "expected": "^兑换$",
+        "roi": [
+            50,
+            305,
+            150,
+            90
+        ],
+        "action": "Click",
+        "post_delay": 1200,
+        "next": "Exchange_OpenSpecial"
+    },
+    "Exchange_OpenSpecial": {
+        "recognition": "OCR",
+        "expected": "特供商店",
+        "roi": [
+            950,
+            55,
+            160,
+            70
+        ],
+        "action": "Click",
+        "post_delay": 1200,
+        "next": "Exchange_BuySpecial"
+    },
+    "Exchange_BuySpecial": {
+        "action": "Custom",
+        "custom_action": "ExchangeWhitelist",
+        "custom_action_param": {
+            "shop": "special"
+        },
+        "next": "Exchange_OpenFamily",
+        "recognition": "ColorMatch",
+        "roi": [
+            970,
+            105,
+            130,
+            17
+        ],
+        "method": 40,
+        "lower": [
+            0,
+            140,
+            100
+        ],
+        "upper": [
+            12,
+            255,
+            255
+        ],
+        "count": 100
+    },
+    "Exchange_OpenFamily": {
+        "recognition": "OCR",
+        "expected": "^家族$",
+        "roi": [
+            1120,
+            55,
+            130,
+            70
+        ],
+        "action": "Click",
+        "post_delay": 1200,
+        "next": "Exchange_BuyFamily"
+    },
+    "Exchange_BuyFamily": {
+        "action": "Custom",
+        "custom_action": "ExchangeWhitelist",
+        "custom_action_param": {
+            "shop": "family"
+        },
+        "next": "Exchange_ReturnHome",
+        "recognition": "ColorMatch",
+        "roi": [
+            1120,
+            105,
+            100,
+            17
+        ],
+        "method": 40,
+        "lower": [
+            0,
+            140,
+            100
+        ],
+        "upper": [
+            12,
+            255,
+            255
+        ],
+        "count": 100
+    },
+    "Exchange_ReturnHome": {
+        "recognition": "OCR",
+        "expected": "特供商店",
+        "roi": [
+            950,
+            55,
+            160,
+            70
+        ],
+        "action": "Click",
+        "target": [
+            156,
+            40
+        ],
+        "post_delay": 1200,
+        "next": "Exchange_Finish"
+    },
+    "Exchange_Finish": {
+        "recognition": "OCR",
+        "expected": "业务",
+        "roi": [
+            1020,
+            570,
+            150,
+            130
+        ],
+        "next": "Poker_Gate"
+    }
+}

@@ -220,7 +220,10 @@
     },
     "Briefing_EventEnded": {
         "recognition": "OCR",
-        "expected": ["事件结束", "事件结算"],
+        "expected": [
+            "事件结束",
+            "事件结算"
+        ],
         "action": "Click",
         "target": [640, 680],
         "post_delay": 1000,
@@ -231,7 +234,10 @@
     },
     "Briefing_BaseReadyToReturn": {
         "recognition": "OCR",
-        "expected": ["仓库", "建造"],
+        "expected": [
+            "仓库",
+            "建造"
+        ],
         "roi": [1010, 580, 250, 100],
         "action": "Click",
         "target": [45, 40],
@@ -244,7 +250,10 @@
     },
     "Briefing_AlreadySettled": {
         "recognition": "OCR",
-        "expected": ["事件结束", "事件结算"],
+        "expected": [
+            "事件结束",
+            "事件结算"
+        ],
         "next": [
             "[JumpBack]Briefing_CloseLevelUp",
             "Briefing_ListReady"
@@ -263,7 +272,7 @@
         "action": "Click",
         "target": [156, 40],
         "post_delay": 1200,
-        "next": "Rewards_OpenPlan",
+        "next": "Impression_OpenBusiness",
         "pre_delay": 1200
     },
     "Briefing_MeetingSelected": {
@@ -381,7 +390,10 @@
     },
     "Briefing_GoBattle": {
         "recognition": "OCR",
-        "expected": ["前往战斗", "去战斗"],
+        "expected": [
+            "前往战斗",
+            "去战斗"
+        ],
         "roi": [650, 350, 600, 330],
         "action": "Click",
         "post_delay": 1000,
@@ -422,13 +434,19 @@
     },
     "Briefing_BattleFailed": {
         "recognition": "OCR",
-        "expected": ["行动失败", "战斗失败"],
+        "expected": [
+            "行动失败",
+            "战斗失败"
+        ],
         "roi": [0, 200, 1280, 460],
         "next": "FatalExit"
     },
     "Briefing_BattleWon": {
         "recognition": "OCR",
-        "expected": ["动成功", "战斗胜利"],
+        "expected": [
+            "动成功",
+            "战斗胜利"
+        ],
         "roi": [30, 310, 650, 190],
         "action": "Click",
         "post_delay": 1500,

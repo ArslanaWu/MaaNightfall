@@ -1,0 +1,111 @@
+{
+    "special": [
+        {
+            "name": "先锋晋升许可Ⅱ",
+            "price": 15,
+            "weeklyLimit": 30
+        },
+        {
+            "name": "歼灭晋升许可Ⅱ",
+            "price": 15,
+            "weeklyLimit": 30
+        },
+        {
+            "name": "支援晋升许可Ⅱ",
+            "price": 15,
+            "weeklyLimit": 30
+        },
+        {
+            "name": "特攻晋升许可Ⅱ",
+            "price": 15,
+            "weeklyLimit": 30
+        },
+        {
+            "name": "爱欲灵感Ⅱ",
+            "price": 30,
+            "weeklyLimit": 10
+        },
+        {
+            "name": "恶欲灵感Ⅱ",
+            "price": 30,
+            "weeklyLimit": 10
+        },
+        {
+            "name": "惰欲灵感Ⅱ",
+            "price": 30,
+            "weeklyLimit": 10
+        },
+        {
+            "name": "恨欲灵感Ⅱ",
+            "price": 30,
+            "weeklyLimit": 10
+        },
+        {
+            "name": "贪欲灵感Ⅱ",
+            "price": 30,
+            "weeklyLimit": 10
+        },
+        {
+            "name": "食欲灵感Ⅱ",
+            "price": 30,
+            "weeklyLimit": 10
+        },
+        {
+            "name": "私欲灵感Ⅱ",
+            "price": 30,
+            "weeklyLimit": 10
+        },
+        {
+            "name": "作战报告",
+            "price": 40,
+            "weeklyLimit": 50
+        }
+    ],
+    "family": [
+        {
+            "name": "欲望特调Ⅱ",
+            "price": 15,
+            "weeklyLimit": 10
+        },
+        {
+            "name": "爱欲灵感Ⅱ",
+            "price": 10,
+            "weeklyLimit": 10
+        },
+        {
+            "name": "恶欲灵感Ⅱ",
+            "price": 10,
+            "weeklyLimit": 10
+        },
+        {
+            "name": "惰欲灵感Ⅱ",
+            "price": 10,
+            "weeklyLimit": 10
+        },
+        {
+            "name": "恨欲灵感Ⅱ",
+            "price": 10,
+            "weeklyLimit": 10
+        },
+        {
+            "name": "贪欲灵感Ⅱ",
+            "price": 10,
+            "weeklyLimit": 10
+        },
+        {
+            "name": "食欲灵感Ⅱ",
+            "price": 10,
+            "weeklyLimit": 10
+        },
+        {
+            "name": "私欲灵感Ⅱ",
+            "price": 10,
+            "weeklyLimit": 10
+        },
+        {
+            "name": "作战报告",
+            "price": 15,
+            "weeklyLimit": 10
+        }
+    ]
+}

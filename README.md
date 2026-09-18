@@ -126,3 +126,28 @@ run_daily.cmd --check
 - 简报奖励后的属性升级不限定铁腕或仁心，根据“提升/升级”和底部关闭提示识别，点击底部空白后回到原流程；覆盖普通、会面和战斗奖励路径。
 - 业务入口增加有限重试，简报返回时等待界面动画结束；中途异常停止不再误报成功。
 - 已验证 53 项视频识别、10 个流程回放，以及实机故障截图的 16 项识别检查。实机截图保留在本地 `.analysis/live/` 和 `debug/on_error/`，不提交账号画面。
+
+## 补充视频功能（2026-09-18）
+
+新增菜单 11 friends（好友赠礼）、12 impression（首领印象激活）、13 exchange（白名单兑换）、14 poker（罪恶博弈）。all 包含新增模块；好友在清体力前执行，属性激活在简报后执行，兑换在免费礼包后执行，博弈始终最后执行。
+
+- 通行证必须确认奖励页内容才领取或返回；点击落空会重试。
+- 兑换白名单见 assets/exchange_whitelist.json。特供商店仅四种晋升许可Ⅱ、七种灵感Ⅱ、周限 50 次的作战报告；家族仅欲望特调Ⅱ、七种灵感Ⅱ、周限 10 次的作战报告。使用游戏的最大按钮，再核对名称、周限档位、数量、总价和余额。售罄和余额不足的跳过，不兑换图纸、金币或同名高价常驻商品。
+- 博弈每次运行最多匹配一局，每周最多两局。看到对手 VS 画面后保存次数并立即关闭游戏，即使没有选择 close；匹配中不会提前退出。本周已按用户确认记录为两次。
+- 每周记录按 UID 存在 .state/weekly.json，重启不清零，不进 Git。开始匹配时预留次数，确认对手后记账；意外中断遗留的 pending 会阻止重复匹配，确认实际状态后再校准。
+- assets/task_policies.json 集中配置任务限额及刷新时间，默认北京时间周一 05:00，可按服务器规则调整。新周限任务可复用 tools/weekly_ledger.mjs。手动参与后应校准次数，不要删除记录。
+- 通用 Project Interface 配置了 Node Agent，与命令行复用兑换和周限动作；需要 PATH 中的 Node.js 和已安装的 Maa Node 运行库。
+
+运行示例：run_daily.cmd start friends impression pass exchange poker
+
+查看周限记录：node tools/task_state.mjs status
+校准已完成次数：node tools/task_state.mjs set 你的UID poker 本周已完成次数
+
+三个补充视频按 fps=1,scale=1280:720 抽帧到 .analysis/extra-videos/v6-%03d.png、v8-%03d.png、v10-%03d.png。验证脚本：
+
+- node tools/test_extra_recognition.mjs
+- node tools/test_extra_replay.mjs
+- node tools/test_extra_actions.mjs
+- node tools/test_weekly_exchange.mjs
+
+实机已验证通行证奖励领取（26 级 30000 金币）、好友已领满跳过、两种印象已激活跳过、兑换售罄跳过及本周博弈满两次跳过。今天无法重复的领取、属性激活、兑换和匹配成功退出采用录像回放验证；不足余额采用模拟控制器验证。没有额外实机匹配。

@@ -46,12 +46,17 @@
         "roi": [25, 145, 100, 75],
         "action": "Click",
         "post_delay": 1000,
-        "next": "Pass_RewardsCheck"
+        "next": [
+            "Pass_RewardsReady",
+            "Pass_OpenRewards"
+        ],
+        "max_hit": 3,
+        "pre_delay": 600
     },
     "Pass_ReturnHome": {
         "recognition": "OCR",
-        "expected": "拍摄进度",
-        "roi": [110, 145, 140, 65],
+        "expected": "场记板合约",
+        "roi": [120, 300, 200, 95],
         "action": "Click",
         "target": [156, 40],
         "post_delay": 1200,
@@ -154,5 +159,11 @@
         "repeat_delay": 1100,
         "post_delay": 1200,
         "next": "Pass_ReturnHome"
+    },
+    "Pass_RewardsReady": {
+        "recognition": "OCR",
+        "expected": "场记板合约",
+        "roi": [120, 300, 200, 95],
+        "next": "Pass_RewardsCheck"
     }
 }

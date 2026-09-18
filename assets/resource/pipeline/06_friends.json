@@ -1,0 +1,106 @@
+{
+    "Friends_Open": {
+        "recognition": "OCR",
+        "expected": "业务",
+        "roi": [
+            1020,
+            570,
+            150,
+            130
+        ],
+        "action": "Click",
+        "target": [
+            285,
+            90
+        ],
+        "post_delay": 1200,
+        "next": "Friends_Ready"
+    },
+    "Friends_Ready": {
+        "recognition": "OCR",
+        "expected": "好友名单",
+        "roi": [
+            20,
+            100,
+            190,
+            80
+        ],
+        "next": [
+            "Friends_AlreadyClaimed",
+            "Friends_Claim"
+        ]
+    },
+    "Friends_AlreadyClaimed": {
+        "recognition": "OCR",
+        "expected": "今日已领次数.*6/6",
+        "roi": [
+            700,
+            605,
+            280,
+            80
+        ],
+        "next": "Friends_ReturnHome"
+    },
+    "Friends_Claim": {
+        "recognition": "OCR",
+        "expected": "赠礼取送",
+        "roi": [
+            1000,
+            600,
+            220,
+            90
+        ],
+        "action": "Click",
+        "max_hit": 1,
+        "post_delay": 1200,
+        "next": [
+            "Friends_CloseReward",
+            "Friends_AlreadyClaimed"
+        ]
+    },
+    "Friends_CloseReward": {
+        "recognition": "OCR",
+        "expected": "获得物品",
+        "roi": [
+            430,
+            80,
+            420,
+            130
+        ],
+        "action": "Click",
+        "target": [
+            640,
+            680
+        ],
+        "post_delay": 1200,
+        "next": "Friends_Ready"
+    },
+    "Friends_ReturnHome": {
+        "recognition": "OCR",
+        "expected": "好友名单",
+        "roi": [
+            20,
+            100,
+            190,
+            80
+        ],
+        "action": "Click",
+        "target": [
+            45,
+            40
+        ],
+        "post_delay": 1200,
+        "next": "Friends_Finish"
+    },
+    "Friends_Finish": {
+        "recognition": "OCR",
+        "expected": "业务",
+        "roi": [
+            1020,
+            570,
+            150,
+            130
+        ],
+        "next": "Stamina_OpenFamilyAffairs"
+    }
+}

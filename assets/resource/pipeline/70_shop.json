@@ -44,7 +44,7 @@
         "recognition": "OCR",
         "expected": "业务",
         "roi": [1020, 570, 150, 130],
-        "next": "SuccessExit"
+        "next": "Exchange_Open"
     },
     "Shop_DailyCheck": {
         "next": [

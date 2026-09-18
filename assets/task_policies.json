@@ -1,0 +1,13 @@
+{
+    "reset": {
+        "utcOffsetHours": 8,
+        "weekday": 1,
+        "hour": 5
+    },
+    "tasks": {
+        "poker": {
+            "limit": 2,
+            "period": "week"
+        }
+    }
+}

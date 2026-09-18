@@ -463,3 +463,6 @@ tools/ImageCropper/**/*.png
 
 config
 debug
+
+# Per-account task quotas and pending matching records
+.state/

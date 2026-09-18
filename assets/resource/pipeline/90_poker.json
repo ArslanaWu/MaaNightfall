@@ -1,0 +1,66 @@
+{
+    "Poker_Gate": {
+        "action": "Custom",
+        "custom_action": "WeeklyGate",
+        "custom_action_param": {
+            "key": "poker"
+        },
+        "next": "Poker_OpenBusiness"
+    },
+    "Poker_Skip": {
+        "next": "SuccessExit"
+    },
+    "Poker_OpenBusiness": {
+        "recognition": "OCR",
+        "expected": "业务",
+        "roi": [1020, 570, 150, 130],
+        "action": "Click",
+        "target": [1090, 645],
+        "post_delay": 1200,
+        "next": "Poker_Open",
+        "pre_delay": 600
+    },
+    "Poker_Open": {
+        "recognition": "OCR",
+        "expected": "罪恶博弈",
+        "roi": [120, 430, 340, 160],
+        "action": "Click",
+        "post_delay": 1500,
+        "next": "Poker_OpenRoom"
+    },
+    "Poker_OpenRoom": {
+        "recognition": "OCR",
+        "expected": "沉罪私厢",
+        "roi": [760, 390, 280, 125],
+        "action": "Click",
+        "post_delay": 1400,
+        "next": "Poker_StartMatching"
+    },
+    "Poker_StartMatching": {
+        "recognition": "OCR",
+        "expected": "开始匹配",
+        "roi": [500, 530, 270, 105],
+        "action": "Custom",
+        "custom_action": "WeeklyStartMatch",
+        "custom_action_param": {
+            "key": "poker"
+        },
+        "timeout": 180000,
+        "next": "Poker_Matched"
+    },
+    "Poker_Matched": {
+        "recognition": "TemplateMatch",
+        "template": "poker/matched_vs.png",
+        "roi": [530, 360, 230, 190],
+        "threshold": 0.85,
+        "action": "Custom",
+        "custom_action": "WeeklyMatchedExit",
+        "custom_action_param": {
+            "key": "poker"
+        },
+        "next": "Poker_Closed"
+    },
+    "Poker_Closed": {
+        "action": "DoNothing"
+    }
+}

@@ -73,8 +73,8 @@ const scenes=[
  ['Pass_OpenEvent','latest-145.png',[620,205,220,65]],
  ['Pass_OpenRewards','latest-147.png',[25,145,100,75]],
  ['Pass_RewardsClaim','latest-141.png',[610,625,230,75]],
- ['Pass_RewardsClearAnimation','latest-145.png',[600,650,80,50]],
- ['Pass_RewardsClearAnimation','latest-145.png',[600,650,80,50]],
+ ['Pass_RewardsClearAnimation','latest-147.png',[600,650,80,50]],
+ ['Pass_RewardsClearAnimation','latest-147.png',[600,650,80,50]],
  ['Pass_ReturnHome',home,[130,20,50,50]]
  ]}
 ]

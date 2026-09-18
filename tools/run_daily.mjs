@@ -1,3 +1,4 @@
+import {registerActions} from './custom_actions.mjs'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
@@ -59,8 +60,15 @@ const MODULES = {
   },
 }
 
+Object.assign(MODULES, {
+  friends: {label:'好友赠礼',entry:'Friends_Open',exit:'Friends_Finish'},
+  impression: {label:'首领印象属性激活',entry:'Impression_OpenBusiness',exit:'Impression_Finish'},
+  exchange: {label:'指定商店兑换',entry:'Exchange_Open',exit:'Exchange_Finish'},
+  poker: {label:'罪恶博弈（每周两次，匹配后关闭游戏）',entry:'Poker_Gate',exit:'Poker_Skip'},
+})
+
 const MODULE_ORDER = Object.keys(MODULES)
-const WORK_MODULES = ['drinks', 'stamina', 'base', 'dispatch', 'briefing', 'rewards', 'pass', 'shop']
+const WORK_MODULES = ['drinks', 'friends', 'stamina', 'base', 'dispatch', 'briefing', 'impression', 'rewards', 'pass', 'shop', 'exchange', 'poker']
 
 function modulesArgument() {
   const pluralIndex = process.argv.indexOf('--modules')
@@ -250,6 +258,7 @@ async function main() {
   console.log('[MaaYMZX] 正在加载识别资源……')
 
   const resource = new maa.Resource()
+  registerActions(resource, PROJECT_ROOT)
   const loadJob = resource.post_bundle(RESOURCE_PATH)
   await loadJob.wait()
   if (!loadJob.succeeded) throw new Error(`资源加载失败：${RESOURCE_PATH}`)
@@ -299,14 +308,14 @@ async function main() {
   const completedNodes = result.nodes.map((id) => tasker.node_detail(id))
   const terminal = selectedModules.includes('close') ? 'SuccessExit' : 'KeepGameOpenFinish'
   const aborted = completedNodes.some((node) => ['FatalExit', 'AbortTask', 'AbortAfterStopFailure'].includes(node?.name))
-  const succeeded = taskJob.succeeded && !aborted && completedNodes.some((node) => node?.name === terminal && node.completed)
+  const succeeded = taskJob.succeeded && !aborted && completedNodes.some((node) => [terminal, 'Poker_Closed'].includes(node?.name) && node.completed)
   console.log(`[MaaYMZX] 任务状态：${succeeded ? statusName(result.status) : 'Failed'}`)
   tasker.destroy()
   controller.destroy()
   resource.destroy()
 
   if (!succeeded) throw new Error('任务未正常完成；详细信息请查看 debug\\maafw.log。')
-  const ending = selectedModules.includes('close') ? '游戏已关闭。' : '游戏保持开启。'
+  const ending = (selectedModules.includes('close') || completedNodes.some(node => node?.name === 'Poker_Closed')) ? '游戏已关闭。' : '游戏保持开启。'
   console.log(`[MaaYMZX] 所选模块执行完成，${ending}`)
 }
 

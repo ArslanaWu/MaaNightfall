@@ -86,6 +86,6 @@
         "recognition": "OCR",
         "expected": "业务",
         "roi": [1020, 570, 150, 130],
-        "next": "Stamina_OpenFamilyAffairs"
+        "next": "Friends_Open"
     }
 }

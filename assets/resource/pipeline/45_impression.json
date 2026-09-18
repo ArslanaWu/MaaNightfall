@@ -1,0 +1,91 @@
+{
+    "Impression_OpenBusiness": {
+        "recognition": "OCR",
+        "expected": "业务",
+        "roi": [1020, 570, 150, 130],
+        "action": "Click",
+        "target": [1090, 645],
+        "post_delay": 1200,
+        "next": "Impression_OpenBriefing",
+        "pre_delay": 600
+    },
+    "Impression_OpenBriefing": {
+        "recognition": "OCR",
+        "expected": "巡夜简报",
+        "roi": [850, 300, 430, 300],
+        "action": "Click",
+        "post_delay": 1200,
+        "next": "Impression_Open"
+    },
+    "Impression_Open": {
+        "recognition": "OCR",
+        "expected": "首领印象",
+        "roi": [60, 600, 250, 100],
+        "action": "Click",
+        "post_delay": 1500,
+        "next": "Impression_SelectKindness"
+    },
+    "Impression_SelectKindness": {
+        "action": "Click",
+        "target": [180, 350],
+        "post_delay": 1200,
+        "next": "Impression_LeftCheck",
+        "max_hit": 1
+    },
+    "Impression_LeftCheck": {
+        "next": [
+            "Impression_ActivateLeft",
+            "Impression_SelectIron"
+        ]
+    },
+    "Impression_ActivateLeft": {
+        "recognition": "OCR",
+        "expected": "可激活",
+        "roi": [320, 130, 500, 450],
+        "action": "Click",
+        "target": true,
+        "target_offset": [0, -65, 0, 0],
+        "post_delay": 1400,
+        "max_hit": 20,
+        "next": "Impression_LeftCheck"
+    },
+    "Impression_SelectIron": {
+        "action": "Click",
+        "target": [1120, 350],
+        "post_delay": 1200,
+        "next": "Impression_RightCheck",
+        "max_hit": 1
+    },
+    "Impression_RightCheck": {
+        "next": [
+            "Impression_ActivateRight",
+            "Impression_ReturnHome"
+        ]
+    },
+    "Impression_ActivateRight": {
+        "recognition": "OCR",
+        "expected": "可激活",
+        "roi": [320, 130, 500, 450],
+        "action": "Click",
+        "target": true,
+        "target_offset": [0, -65, 0, 0],
+        "post_delay": 1400,
+        "max_hit": 20,
+        "next": "Impression_RightCheck"
+    },
+    "Impression_ReturnHome": {
+        "recognition": "OCR",
+        "expected": "属性加成",
+        "roi": [0, 600, 1260, 95],
+        "action": "Click",
+        "target": [156, 40],
+        "post_delay": 1200,
+        "next": "Impression_Finish"
+    },
+    "Impression_Finish": {
+        "recognition": "OCR",
+        "expected": "业务",
+        "roi": [1020, 570, 150, 130],
+        "next": "Rewards_OpenPlan"
+    }
+}

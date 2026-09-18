@@ -25,5 +25,11 @@
             "name": "一键日常",
             "entry": "DailyRoutine"
         }
-    ]
+    ],
+    "agent": {
+        "child_exec": "node",
+        "child_args": [
+            "{PROJECT_DIR}/../tools/agent_server.mjs"
+        ]
+    }
 }
