@@ -1,0 +1,158 @@
+{
+    "Pass_Open": {
+        "recognition": "TemplateMatch",
+        "template": "pass/home_icon.png",
+        "roi": [325, 55, 85, 65],
+        "threshold": 0.82,
+        "action": "Click",
+        "post_delay": 1200,
+        "next": "Pass_OpenTasks"
+    },
+    "Pass_OpenTasks": {
+        "recognition": "OCR",
+        "expected": "^任务$",
+        "roi": [25, 230, 100, 90],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": "Pass_OpenDaily"
+    },
+    "Pass_OpenDaily": {
+        "recognition": "OCR",
+        "expected": "每日任务",
+        "roi": [150, 205, 230, 65],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": "Pass_DailyCheck"
+    },
+    "Pass_OpenWeekly": {
+        "recognition": "OCR",
+        "expected": "每周任务",
+        "roi": [390, 205, 220, 65],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": "Pass_WeeklyCheck"
+    },
+    "Pass_OpenEvent": {
+        "recognition": "OCR",
+        "expected": "活动任务",
+        "roi": [620, 205, 220, 65],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": "Pass_EventCheck"
+    },
+    "Pass_OpenRewards": {
+        "recognition": "OCR",
+        "expected": "^奖励$",
+        "roi": [25, 145, 100, 75],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": "Pass_RewardsCheck"
+    },
+    "Pass_ReturnHome": {
+        "recognition": "OCR",
+        "expected": "拍摄进度",
+        "roi": [110, 145, 140, 65],
+        "action": "Click",
+        "target": [156, 40],
+        "post_delay": 1200,
+        "next": "Pass_Finish"
+    },
+    "Pass_Finish": {
+        "recognition": "OCR",
+        "expected": "业务",
+        "roi": [1020, 570, 150, 130],
+        "next": "Shop_Open"
+    },
+    "Pass_DailyCheck": {
+        "next": [
+            "Pass_DailyClaim",
+            "Pass_OpenWeekly"
+        ]
+    },
+    "Pass_DailyClaim": {
+        "recognition": "OCR",
+        "expected": "^(一)?键领取$",
+        "roi": [610, 625, 230, 75],
+        "action": "Click",
+        "post_delay": 1800,
+        "next": "Pass_DailyClearAnimation",
+        "max_hit": 1
+    },
+    "Pass_DailyClearAnimation": {
+        "action": "Click",
+        "target": [640, 680],
+        "repeat": 2,
+        "repeat_delay": 1100,
+        "post_delay": 1200,
+        "next": "Pass_OpenWeekly"
+    },
+    "Pass_WeeklyCheck": {
+        "next": [
+            "Pass_WeeklyClaim",
+            "Pass_OpenEvent"
+        ]
+    },
+    "Pass_WeeklyClaim": {
+        "recognition": "OCR",
+        "expected": "^(一)?键领取$",
+        "roi": [610, 625, 230, 75],
+        "action": "Click",
+        "post_delay": 1800,
+        "next": "Pass_WeeklyClearAnimation",
+        "max_hit": 1
+    },
+    "Pass_WeeklyClearAnimation": {
+        "action": "Click",
+        "target": [640, 680],
+        "repeat": 2,
+        "repeat_delay": 1100,
+        "post_delay": 1200,
+        "next": "Pass_OpenEvent"
+    },
+    "Pass_EventCheck": {
+        "next": [
+            "Pass_EventClaim",
+            "Pass_OpenRewards"
+        ]
+    },
+    "Pass_EventClaim": {
+        "recognition": "OCR",
+        "expected": "^(一)?键领取$",
+        "roi": [610, 625, 230, 75],
+        "action": "Click",
+        "post_delay": 1800,
+        "next": "Pass_EventClearAnimation",
+        "max_hit": 1
+    },
+    "Pass_EventClearAnimation": {
+        "action": "Click",
+        "target": [640, 680],
+        "repeat": 2,
+        "repeat_delay": 1100,
+        "post_delay": 1200,
+        "next": "Pass_OpenRewards"
+    },
+    "Pass_RewardsCheck": {
+        "next": [
+            "Pass_RewardsClaim",
+            "Pass_ReturnHome"
+        ]
+    },
+    "Pass_RewardsClaim": {
+        "recognition": "OCR",
+        "expected": "^(一)?键领取$",
+        "roi": [610, 625, 230, 75],
+        "action": "Click",
+        "post_delay": 1800,
+        "next": "Pass_RewardsClearAnimation",
+        "max_hit": 1
+    },
+    "Pass_RewardsClearAnimation": {
+        "action": "Click",
+        "target": [640, 680],
+        "repeat": 2,
+        "repeat_delay": 1100,
+        "post_delay": 1200,
+        "next": "Pass_ReturnHome"
+    }
+}

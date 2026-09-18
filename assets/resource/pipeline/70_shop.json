@@ -1,0 +1,239 @@
+{
+    "Shop_Open": {
+        "recognition": "OCR",
+        "expected": "商城",
+        "roi": [30, 490, 200, 90],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": "Shop_OpenGifts"
+    },
+    "Shop_OpenGifts": {
+        "recognition": "OCR",
+        "expected": "礼包",
+        "roi": [55, 250, 150, 90],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": "Shop_OpenRecommended"
+    },
+    "Shop_OpenRecommended": {
+        "recognition": "OCR",
+        "expected": "超值推荐",
+        "roi": [290, 65, 180, 65],
+        "action": "Click",
+        "post_delay": 1300,
+        "next": "Shop_DailyCheck"
+    },
+    "Shop_OpenContract": {
+        "recognition": "OCR",
+        "expected": "契约特供",
+        "roi": [620, 65, 180, 65],
+        "action": "Click",
+        "post_delay": 1300,
+        "next": "Shop_ContractCheck"
+    },
+    "Shop_ReturnHome": {
+        "recognition": "OCR",
+        "expected": "礼包",
+        "roi": [55, 250, 150, 90],
+        "action": "Click",
+        "target": [156, 40],
+        "post_delay": 1200,
+        "next": "Shop_Finish"
+    },
+    "Shop_Finish": {
+        "recognition": "OCR",
+        "expected": "业务",
+        "roi": [1020, 570, 150, 130],
+        "next": "SuccessExit"
+    },
+    "Shop_DailyCheck": {
+        "next": [
+            "Shop_DailySoldOut",
+            "Shop_DailyOpenFree",
+            "Shop_OpenContract"
+        ]
+    },
+    "Shop_DailySoldOut": {
+        "recognition": "OCR",
+        "expected": "售罄",
+        "roi": [290, 190, 190, 90],
+        "next": "Shop_OpenContract"
+    },
+    "Shop_DailyOpenFree": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": {
+                    "type": "OCR",
+                    "param": {
+                        "expected": "^每日赠礼$",
+                        "roi": [290, 285, 190, 45],
+                        "threshold": 0.9
+                    }
+                }
+            },
+            {
+                "recognition": {
+                    "type": "OCR",
+                    "param": {
+                        "expected": "^免费$",
+                        "roi": [290, 335, 190, 55],
+                        "threshold": 0.95
+                    }
+                }
+            }
+        ],
+        "box_index": 1,
+        "action": "Click",
+        "max_hit": 1,
+        "post_delay": 1000,
+        "next": [
+            "Shop_DailyConfirmFree",
+            "Shop_DailyCancelDetail"
+        ]
+    },
+    "Shop_DailyConfirmFree": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": {
+                    "type": "OCR",
+                    "param": {
+                        "expected": "^每日赠礼$",
+                        "roi": [490, 160, 540, 75],
+                        "threshold": 0.9
+                    }
+                }
+            },
+            {
+                "recognition": {
+                    "type": "OCR",
+                    "param": {
+                        "expected": "^免费领取$",
+                        "roi": [675, 485, 250, 65],
+                        "threshold": 0.95
+                    }
+                }
+            }
+        ],
+        "box_index": 1,
+        "action": "Click",
+        "max_hit": 1,
+        "post_delay": 1200,
+        "next": "Shop_DailyCloseReward"
+    },
+    "Shop_DailyCancelDetail": {
+        "recognition": "OCR",
+        "expected": "^每日赠礼$",
+        "roi": [490, 160, 540, 75],
+        "action": "Click",
+        "target": [1087, 175],
+        "post_delay": 800,
+        "next": "Shop_OpenContract"
+    },
+    "Shop_DailyCloseReward": {
+        "recognition": "OCR",
+        "expected": "获得物品",
+        "roi": [400, 70, 480, 180],
+        "action": "Click",
+        "post_delay": 1100,
+        "next": "Shop_OpenContract",
+        "target": [640, 660],
+        "max_hit": 6
+    },
+    "Shop_ContractCheck": {
+        "next": [
+            "Shop_ContractSoldOut",
+            "Shop_ContractOpenFree",
+            "Shop_ReturnHome"
+        ]
+    },
+    "Shop_ContractSoldOut": {
+        "recognition": "OCR",
+        "expected": "售罄",
+        "roi": [290, 190, 190, 90],
+        "next": "Shop_ReturnHome"
+    },
+    "Shop_ContractOpenFree": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": {
+                    "type": "OCR",
+                    "param": {
+                        "expected": "^遴选每日赠礼$",
+                        "roi": [290, 285, 190, 45],
+                        "threshold": 0.9
+                    }
+                }
+            },
+            {
+                "recognition": {
+                    "type": "OCR",
+                    "param": {
+                        "expected": "^免费$",
+                        "roi": [290, 335, 190, 55],
+                        "threshold": 0.95
+                    }
+                }
+            }
+        ],
+        "box_index": 1,
+        "action": "Click",
+        "max_hit": 1,
+        "post_delay": 1000,
+        "next": [
+            "Shop_ContractConfirmFree",
+            "Shop_ContractCancelDetail"
+        ]
+    },
+    "Shop_ContractConfirmFree": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": {
+                    "type": "OCR",
+                    "param": {
+                        "expected": "^遴选每日赠礼$",
+                        "roi": [490, 160, 540, 75],
+                        "threshold": 0.9
+                    }
+                }
+            },
+            {
+                "recognition": {
+                    "type": "OCR",
+                    "param": {
+                        "expected": "^免费领取$",
+                        "roi": [675, 485, 250, 65],
+                        "threshold": 0.95
+                    }
+                }
+            }
+        ],
+        "box_index": 1,
+        "action": "Click",
+        "max_hit": 1,
+        "post_delay": 1200,
+        "next": "Shop_ContractCloseReward"
+    },
+    "Shop_ContractCancelDetail": {
+        "recognition": "OCR",
+        "expected": "^遴选每日赠礼$",
+        "roi": [490, 160, 540, 75],
+        "action": "Click",
+        "target": [1087, 175],
+        "post_delay": 800,
+        "next": "Shop_ReturnHome"
+    },
+    "Shop_ContractCloseReward": {
+        "recognition": "OCR",
+        "expected": "获得物品",
+        "roi": [400, 70, 480, 180],
+        "action": "Click",
+        "post_delay": 1100,
+        "next": "Shop_ReturnHome",
+        "target": [640, 660],
+        "max_hit": 6
+    }
+}

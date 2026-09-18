@@ -19,54 +19,142 @@
         "recognition": "OCR",
         "expected": "日常任务",
         "roi": [600, 30, 300, 100],
-        "next": ["Rewards_ClaimDaily", "Rewards_OpenWeekly"]
+        "next": [
+            "Rewards_CloseAcquiredAfterDaily",
+            "Rewards_ClaimDaily",
+            "Rewards_OpenWeekly"
+        ]
     },
     "Rewards_ClaimDaily": {
-        "recognition": "OCR",
-        "expected": ["一键领取", "键领取"],
-        "roi": [900, 570, 350, 130],
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": {
+                    "type": "OCR",
+                    "param": {
+                        "expected": "^(一)?键领取$",
+                        "roi": [920, 600, 330, 95],
+                        "threshold": 0.8
+                    }
+                }
+            },
+            {
+                "recognition": {
+                    "type": "ColorMatch",
+                    "param": {
+                        "roi": [970, 625, 215, 50],
+                        "method": 40,
+                        "lower": [0, 140, 100],
+                        "upper": [12, 255, 255],
+                        "count": 1200
+                    }
+                }
+            }
+        ],
+        "box_index": 0,
         "action": "Click",
-        "max_hit": 1,
-        "post_delay": 800,
-        "next": ["Rewards_CloseAcquiredAfterDaily", "Rewards_OpenWeekly"]
+        "max_hit": 4,
+        "post_delay": 1500,
+        "next": "Rewards_DailyLoop"
     },
     "Rewards_CloseAcquiredAfterDaily": {
         "recognition": "OCR",
         "expected": "获得物品",
+        "roi": [400, 70, 480, 180],
         "action": "Click",
-        "target": [640, 650],
-        "next": "Rewards_OpenWeekly"
+        "post_delay": 1100,
+        "next": "Rewards_DailyLoop",
+        "target": [640, 660],
+        "max_hit": 6
     },
     "Rewards_OpenWeekly": {
         "recognition": "OCR",
         "expected": "周常任务",
         "roi": [880, 30, 340, 100],
         "action": "Click",
-        "post_delay": 800,
-        "next": ["Rewards_ClaimWeekly", "Rewards_WeeklyAlreadyDone"]
+        "post_delay": 1600,
+        "next": "Rewards_WeeklyLoop"
     },
     "Rewards_ClaimWeekly": {
-        "recognition": "OCR",
-        "expected": ["一键领取", "键领取"],
-        "roi": [900, 570, 350, 130],
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": {
+                    "type": "OCR",
+                    "param": {
+                        "expected": "^(一)?键领取$",
+                        "roi": [920, 600, 330, 95],
+                        "threshold": 0.8
+                    }
+                }
+            },
+            {
+                "recognition": {
+                    "type": "ColorMatch",
+                    "param": {
+                        "roi": [970, 625, 215, 50],
+                        "method": 40,
+                        "lower": [0, 140, 100],
+                        "upper": [12, 255, 255],
+                        "count": 1200
+                    }
+                }
+            }
+        ],
+        "box_index": 0,
         "action": "Click",
-        "max_hit": 1,
-        "post_delay": 800,
-        "next": ["Rewards_CloseAcquiredAfterWeekly", "Rewards_Finish"]
+        "max_hit": 4,
+        "post_delay": 1500,
+        "next": "Rewards_WeeklyLoop"
     },
     "Rewards_CloseAcquiredAfterWeekly": {
         "recognition": "OCR",
         "expected": "获得物品",
+        "roi": [400, 70, 480, 180],
         "action": "Click",
-        "target": [640, 650],
-        "next": "Rewards_Finish"
+        "post_delay": 1100,
+        "next": "Rewards_WeeklyLoop",
+        "target": [640, 660],
+        "max_hit": 6
     },
     "Rewards_WeeklyAlreadyDone": {
         "recognition": "OCR",
         "expected": ["已完成每周任务", "已领取全部奖励", "已达成"],
-        "next": "Rewards_Finish"
+        "next": "Rewards_ReturnHome"
     },
     "Rewards_Finish": {
-        "next": "SuccessExit"
+        "recognition": "OCR",
+        "expected": "业务",
+        "roi": [1020, 570, 150, 130],
+        "next": "Pass_Open"
+    },
+    "Rewards_DailyLoop": {
+        "next": [
+            "Rewards_CloseAcquiredAfterDaily",
+            "Rewards_ClaimDaily",
+            "Rewards_OpenWeekly"
+        ]
+    },
+    "Rewards_WeeklyLoop": {
+        "next": [
+            "Rewards_CloseAcquiredAfterWeekly",
+            "Rewards_ClaimWeekly",
+            "Rewards_WeeklyReady"
+        ]
+    },
+    "Rewards_WeeklyReady": {
+        "recognition": "OCR",
+        "expected": "周常任务",
+        "roi": [880, 30, 340, 100],
+        "next": "Rewards_ReturnHome"
+    },
+    "Rewards_ReturnHome": {
+        "recognition": "OCR",
+        "expected": "累计数量",
+        "roi": [160, 70, 300, 100],
+        "action": "Click",
+        "target": [156, 40],
+        "post_delay": 1200,
+        "next": "Rewards_Finish"
     }
 }

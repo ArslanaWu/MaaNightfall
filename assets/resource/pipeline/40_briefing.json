@@ -68,10 +68,11 @@
         "timeout": 12000,
         "next": [
             "Briefing_CloseRewardAfterNext",
+            "Briefing_AlreadySettled",
+            "Briefing_MeetingSelected",
             "Briefing_ImmediateTravel",
-            "Briefing_GoBattle_Unimplemented",
-            "Briefing_ChoiceInList",
-            "Briefing_AlreadySettled"
+            "Briefing_GoBattle",
+            "Briefing_ChoiceInList"
         ]
     },
     "Briefing_CloseRewardAfterNext": {
@@ -81,7 +82,7 @@
         "action": "Click",
         "target": [640, 650],
         "post_delay": 800,
-        "max_hit": 3,
+        "max_hit": 10,
         "next": "Briefing_HandleSelected"
     },
     "Briefing_ChoiceInList": {
@@ -103,7 +104,7 @@
         "action": "Click",
         "target": [640, 650],
         "post_delay": 800,
-        "max_hit": 3,
+        "max_hit": 10,
         "next": "Briefing_ListReady"
     },
     "Briefing_ImmediateTravel": {
@@ -113,10 +114,11 @@
         "post_delay": 1500,
         "timeout": 60000,
         "next": [
+            "Briefing_BattleStart",
             "Briefing_CloseTravelReward",
             "Briefing_DonateOnMap",
             "Briefing_ChoiceOnMap",
-            "Briefing_GoBattle_Unimplemented"
+            "Briefing_GoBattle"
         ]
     },
     "Briefing_CloseTravelReward": {
@@ -128,10 +130,11 @@
         "post_delay": 1000,
         "max_hit": 3,
         "next": [
+            "Briefing_BattleStart",
             "Briefing_CloseTravelReward",
             "Briefing_DonateOnMap",
             "Briefing_ChoiceOnMap",
-            "Briefing_GoBattle_Unimplemented"
+            "Briefing_GoBattle"
         ]
     },
     "Briefing_DonateOnMap": {
@@ -145,7 +148,10 @@
     },
     "Briefing_ChoiceOnMap": {
         "recognition": "TemplateMatch",
-        "template": ["briefing/choice_side.png", "briefing/choice_side_new.png"],
+        "template": [
+            "briefing/choice_side.png",
+            "briefing/choice_side_new.png"
+        ],
         "green_mask": true,
         "roi": [760, 350, 500, 330],
         "action": "Click",
@@ -176,11 +182,6 @@
         "expected": ["事件结束", "事件结算"],
         "next": "Briefing_ListReady"
     },
-    "Briefing_GoBattle_Unimplemented": {
-        "recognition": "OCR",
-        "expected": ["前往战斗", "去战斗"],
-        "next": "FatalExit"
-    },
     "Briefing_Leave": {
         "action": "Click",
         "target": [45, 40],
@@ -195,5 +196,181 @@
         "target": [156, 40],
         "post_delay": 1200,
         "next": "Rewards_OpenPlan"
+    },
+    "Briefing_MeetingSelected": {
+        "recognition": "OCR",
+        "expected": "会面",
+        "roi": [650, 60, 500, 100],
+        "next": "Briefing_MeetingTravel"
+    },
+    "Briefing_MeetingTravel": {
+        "recognition": "OCR",
+        "expected": "立即前往",
+        "roi": [650, 450, 500, 180],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": "Briefing_MeetingTapCharacter",
+        "timeout": 60000
+    },
+    "Briefing_MeetingTapCharacter": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": {
+                    "type": "OCR",
+                    "param": {
+                        "expected": "档案",
+                        "roi": [980, 90, 180, 100],
+                        "threshold": 0.8
+                    }
+                }
+            },
+            {
+                "recognition": {
+                    "type": "OCR",
+                    "param": {
+                        "expected": "语音",
+                        "roi": [1150, 130, 120, 100],
+                        "threshold": 0.8
+                    }
+                }
+            }
+        ],
+        "action": "Click",
+        "target": [620, 350],
+        "post_delay": 1500,
+        "timeout": 30000,
+        "next": "Briefing_MeetingAfterTap"
+    },
+    "Briefing_MeetingAfterTap": {
+        "timeout": 4000,
+        "next": [
+            "Briefing_MeetingCloseReward",
+            "Briefing_MeetingReturn"
+        ],
+        "on_error": "Briefing_MeetingDismissReveal"
+    },
+    "Briefing_MeetingCloseReward": {
+        "recognition": "OCR",
+        "expected": "获得物品",
+        "roi": [400, 70, 480, 180],
+        "action": "Click",
+        "post_delay": 1100,
+        "next": "Briefing_MeetingAfterTap",
+        "target": [640, 660],
+        "max_hit": 6
+    },
+    "Briefing_MeetingDismissReveal": {
+        "action": "Click",
+        "target": [640, 670],
+        "max_hit": 5,
+        "post_delay": 1200,
+        "next": "Briefing_MeetingAfterTap"
+    },
+    "Briefing_MeetingReturn": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": {
+                    "type": "OCR",
+                    "param": {
+                        "expected": "档案",
+                        "roi": [980, 90, 180, 100],
+                        "threshold": 0.8
+                    }
+                }
+            },
+            {
+                "recognition": {
+                    "type": "OCR",
+                    "param": {
+                        "expected": "语音",
+                        "roi": [1150, 130, 120, 100],
+                        "threshold": 0.8
+                    }
+                }
+            }
+        ],
+        "action": "Click",
+        "target": [45, 40],
+        "post_delay": 1000,
+        "next": [
+            "Briefing_CloseRewardAfterChoice",
+            "Briefing_ListReady"
+        ]
+    },
+    "Briefing_GoBattle": {
+        "recognition": "OCR",
+        "expected": ["前往战斗", "去战斗"],
+        "roi": [650, 350, 600, 330],
+        "action": "Click",
+        "post_delay": 1000,
+        "next": "Briefing_BattleStart"
+    },
+    "Briefing_BattleStart": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": {
+                    "type": "OCR",
+                    "param": {
+                        "expected": "开始行动",
+                        "roi": [1060, 610, 170, 70],
+                        "threshold": 0.8
+                    }
+                }
+            },
+            {
+                "recognition": {
+                    "type": "OCR",
+                    "param": {
+                        "expected": "^0$",
+                        "roi": [1005, 615, 65, 50],
+                        "threshold": 0.8
+                    }
+                }
+            }
+        ],
+        "box_index": 0,
+        "action": "Click",
+        "post_delay": 1500,
+        "timeout": 180000,
+        "next": [
+            "Briefing_BattleFailed",
+            "Briefing_BattleWon"
+        ]
+    },
+    "Briefing_BattleFailed": {
+        "recognition": "OCR",
+        "expected": ["行动失败", "战斗失败"],
+        "roi": [0, 200, 1280, 460],
+        "next": "FatalExit"
+    },
+    "Briefing_BattleWon": {
+        "recognition": "OCR",
+        "expected": ["动成功", "战斗胜利"],
+        "roi": [30, 310, 650, 190],
+        "action": "Click",
+        "post_delay": 1500,
+        "next": "Briefing_BattleReturn",
+        "target": [640, 680]
+    },
+    "Briefing_BattleReturn": {
+        "timeout": 60000,
+        "next": [
+            "Briefing_BattleWon",
+            "Briefing_BattleCloseReward",
+            "Briefing_ListReady"
+        ]
+    },
+    "Briefing_BattleCloseReward": {
+        "recognition": "OCR",
+        "expected": "获得物品",
+        "roi": [400, 70, 480, 180],
+        "action": "Click",
+        "post_delay": 1100,
+        "next": "Briefing_ListReady",
+        "target": [640, 660],
+        "max_hit": 6
     }
 }

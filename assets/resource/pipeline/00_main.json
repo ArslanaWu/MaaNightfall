@@ -28,7 +28,7 @@
         "recognition": "OCR",
         "expected": "业务",
         "roi": [980, 570, 150, 130],
-        "next": "Stamina_OpenFamilyAffairs"
+        "next": "Drinks_OpenPlan"
     },
     "Startup_GameAnnouncement": {
         "recognition": "OCR",

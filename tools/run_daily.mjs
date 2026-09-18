@@ -42,10 +42,25 @@ const MODULES = {
   close: {
     label: '关闭游戏',
   },
+  drinks: {
+    label: '每日免费饮品',
+    entry: 'Drinks_OpenPlan',
+    exit: 'Drinks_Finish',
+  },
+  pass: {
+    label: '通行证任务与奖励',
+    entry: 'Pass_Open',
+    exit: 'Pass_Finish',
+  },
+  shop: {
+    label: '商店免费礼包',
+    entry: 'Shop_Open',
+    exit: 'Shop_Finish',
+  },
 }
 
 const MODULE_ORDER = Object.keys(MODULES)
-const WORK_MODULES = MODULE_ORDER.filter((name) => MODULES[name].entry)
+const WORK_MODULES = ['drinks', 'stamina', 'base', 'dispatch', 'briefing', 'rewards', 'pass', 'shop']
 
 function modulesArgument() {
   const pluralIndex = process.argv.indexOf('--modules')
@@ -268,7 +283,12 @@ async function main() {
 
   if (!tasker.inited) throw new Error('Tasker 初始化失败。')
 
-  const labels = selectedModules.map((name) => MODULES[name].label).join(' → ')
+  const executionOrder = [
+    ...(selectedModules.includes('start') ? ['start'] : []),
+    ...WORK_MODULES.filter((name) => selectedModules.includes(name)),
+    ...(selectedModules.includes('close') ? ['close'] : []),
+  ]
+  const labels = executionOrder.map((name) => MODULES[name].label).join(' → ')
   if (!selectedModules.includes('start') && selectedModules.some((name) => WORK_MODULES.includes(name))) {
     console.log('[MaaYMZX] 未选择“启动游戏”，请确保游戏已经停在主界面。')
   }
