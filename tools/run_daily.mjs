@@ -1,3 +1,4 @@
+import {ensureMuMu} from './mumu.mjs'
 import {MODULES, MODULE_ORDER, WORK_MODULES, normalizeModules, createExecutionPlan} from './modules.mjs'
 import {registerActions} from './custom_actions.mjs'
 import fs from 'node:fs'
@@ -48,7 +49,7 @@ function isMuMuDevice(device) {
   }
 }
 
-async function connectMuMuController() {
+async function connectMuMuController(targetAddress) {
   let lastError
 
   for (let attempt = 1; attempt <= DEVICE_DISCOVERY_ATTEMPTS; attempt++) {
@@ -58,7 +59,7 @@ async function connectMuMuController() {
       // Do not pass a fixed ADB path here. The global finder asks MuMuManager for
       // the running instance and returns its ADB path, serial and MuMu extras.
       const devices = await maa.AdbController.find()
-      const device = devices?.find(isMuMuDevice)
+      const device = devices?.find(device => isMuMuDevice(device) && device[2] === targetAddress)
       if (device) {
         const [, adbPath, address, screencapMethods, inputMethods, config] = device
         controller = new maa.AdbController(
@@ -132,8 +133,10 @@ async function main() {
     return
   }
 
-  console.log('[MaaYMZX] 正在通过 MuMuManager 查找模拟器……')
-  const { controller, address } = await connectMuMuController()
+  console.log('[MaaYMZX] 正在检查并启动 MuMu，首次启动最多等待 120 秒……')
+  const emulator = await ensureMuMu()
+  console.log('[MaaYMZX] MuMu 实例 ' + emulator.index + ' 已就绪。')
+  const { controller, address } = await connectMuMuController(emulator.address)
   console.log(`[MaaYMZX] 已发现 MuMu：${address}`)
 
   console.log(`[MaaYMZX] 已连接，分辨率：${controller.resolution?.join('×') ?? '未知'}`)
