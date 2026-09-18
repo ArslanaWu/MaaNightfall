@@ -20,14 +20,14 @@
 ## 模拟器和 ADB
 
 - Android 包名：`com.bmystu.peng.gw`
-- MuMu ADB 地址：`127.0.0.1:16384`
-- MuMu ADB 程序：`C:\Program Files\Netease\MuMu\nx_device\12.0\shell\adb.exe`
+- 默认 MuMu ADB 地址：`127.0.0.1:16384`
+- MuMu ADB 程序：`C:\Program Files\Netease\MuMu\nx_main\adb.exe`
 
 如果 CMD 提示 `'adb' 不是内部或外部命令`，无需修改系统环境变量，直接运行完整路径：
 
 ```bat
-"C:\Program Files\Netease\MuMu\nx_device\12.0\shell\adb.exe" connect 127.0.0.1:16384
-"C:\Program Files\Netease\MuMu\nx_device\12.0\shell\adb.exe" devices -l
+"C:\Program Files\Netease\MuMu\nx_main\adb.exe" connect 127.0.0.1:16384
+"C:\Program Files\Netease\MuMu\nx_main\adb.exe" devices -l
 ```
 
 连接成功后，在通用 UI 中选择 MuMu 模拟器和 `127.0.0.1:16384`，然后运行“一键日常”。
@@ -68,7 +68,7 @@ run_daily.cmd close
 run_daily.cmd --probe
 ```
 
-脚本会先检查设备是否达到 `device` 状态；普通连接失败时，会自动断开旧连接、重启 ADB daemon 并重新连接。若端口配置错误或 MuMu 的 ADB 功能未开启，恢复流程仍会明确报错。
+脚本会通过 `MuMuManager` 自动发现正在运行的实例，使用 MuMu 返回的 ADB 路径、端口和实例配置连接，不再依赖写死的端口。刚启动模拟器时若尚未就绪，脚本会自动等待最多 60 秒；不会再重启全局 ADB daemon，因此也不会干扰其他正在运行的 MAA 项目。
 
 只检查 MaaFramework 运行库和资源能否加载：
 

@@ -8,7 +8,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$adbExe = 'C:\Program Files\Netease\MuMu\nx_device\12.0\shell\adb.exe'
+$adbExe = 'C:\Program Files\Netease\MuMu\nx_main\adb.exe'
 $deviceAddress = '127.0.0.1:16384'
 $gamePackage = 'com.bmystu.peng.gw'
 
@@ -30,51 +30,6 @@ else {
 }
 
 Set-Location -LiteralPath $projectRoot
-
-function Connect-MuMuAdb {
-    param(
-        [int]$Attempts,
-        [int]$DelaySeconds
-    )
-
-    for ($attempt = 1; $attempt -le $Attempts; $attempt++) {
-        $connectMessage = & $adbExe connect $deviceAddress 2>&1
-        if ($connectMessage) { Write-Host ($connectMessage -join [Environment]::NewLine) }
-
-        $stateOutput = & $adbExe -s $deviceAddress get-state 2>$null
-        $stateExitCode = $LASTEXITCODE
-        $deviceState = ($stateOutput | Out-String).Trim()
-        if ($stateExitCode -eq 0 -and $deviceState -eq 'device') {
-            return $true
-        }
-
-        if ($attempt -lt $Attempts) { Start-Sleep -Seconds $DelaySeconds }
-    }
-
-    return $false
-}
-
-if (-not $Check) {
-    Write-Host '[MaaYMZX] Connecting to MuMu...'
-    & $adbExe start-server *> $null
-    $deviceReady = Connect-MuMuAdb -Attempts 3 -DelaySeconds 1
-
-    if (-not $deviceReady) {
-        Write-Host '[MaaYMZX] Normal connection failed. Restarting the ADB daemon...'
-        & $adbExe disconnect $deviceAddress *> $null
-        & $adbExe kill-server *> $null
-        Start-Sleep -Seconds 1
-        & $adbExe start-server *> $null
-        $deviceReady = Connect-MuMuAdb -Attempts 5 -DelaySeconds 2
-    }
-
-    if (-not $deviceReady) {
-        Write-Error "MuMu ADB did not become ready at $deviceAddress after reconnecting and restarting the daemon."
-        exit 4
-    }
-
-    Start-Sleep -Milliseconds 500
-}
 
 $arguments = @((Join-Path $PSScriptRoot 'run_daily.mjs'))
 if ($Check) { $arguments += '--check' }

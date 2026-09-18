@@ -67,11 +67,22 @@
     "Briefing_HandleSelected": {
         "timeout": 12000,
         "next": [
+            "Briefing_CloseRewardAfterNext",
             "Briefing_ImmediateTravel",
             "Briefing_GoBattle_Unimplemented",
             "Briefing_ChoiceInList",
             "Briefing_AlreadySettled"
         ]
+    },
+    "Briefing_CloseRewardAfterNext": {
+        "recognition": "OCR",
+        "expected": "获得物品",
+        "roi": [420, 80, 440, 160],
+        "action": "Click",
+        "target": [640, 650],
+        "post_delay": 800,
+        "max_hit": 3,
+        "next": "Briefing_HandleSelected"
     },
     "Briefing_ChoiceInList": {
         "recognition": "TemplateMatch",
@@ -80,6 +91,19 @@
         "roi": [600, 350, 650, 330],
         "action": "Click",
         "post_delay": 900,
+        "next": [
+            "Briefing_CloseRewardAfterChoice",
+            "Briefing_ListReady"
+        ]
+    },
+    "Briefing_CloseRewardAfterChoice": {
+        "recognition": "OCR",
+        "expected": "获得物品",
+        "roi": [420, 80, 440, 160],
+        "action": "Click",
+        "target": [640, 650],
+        "post_delay": 800,
+        "max_hit": 3,
         "next": "Briefing_ListReady"
     },
     "Briefing_ImmediateTravel": {
@@ -98,7 +122,7 @@
     "Briefing_CloseTravelReward": {
         "recognition": "OCR",
         "expected": "获得物品",
-        "roi": [420, 300, 440, 180],
+        "roi": [420, 80, 440, 160],
         "action": "Click",
         "target": [640, 680],
         "post_delay": 1000,
@@ -135,12 +159,12 @@
         "action": "Click",
         "target": [640, 680],
         "post_delay": 1000,
-        "next": "Briefing_MapReadyToReturn"
+        "next": "Briefing_BaseReadyToReturn"
     },
-    "Briefing_MapReadyToReturn": {
+    "Briefing_BaseReadyToReturn": {
         "recognition": "OCR",
-        "expected": "巡逻惊喜",
-        "roi": [1050, 430, 230, 230],
+        "expected": ["仓库", "建造"],
+        "roi": [1010, 580, 250, 100],
         "action": "Click",
         "target": [45, 40],
         "post_delay": 1200,

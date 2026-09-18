@@ -6,9 +6,9 @@ import { pathToFileURL } from 'node:url'
 
 const PROJECT_ROOT = path.resolve(import.meta.dirname, '..')
 const RESOURCE_PATH = path.join(PROJECT_ROOT, 'assets', 'resource')
-const ADB_PATH = String.raw`C:\Program Files\Netease\MuMu\nx_device\12.0\shell\adb.exe`
-const DEVICE_ADDRESS = '127.0.0.1:16384'
 const ENTRY = 'DailyRoutine'
+const DEVICE_DISCOVERY_ATTEMPTS = 30
+const DEVICE_DISCOVERY_DELAY_MS = 2000
 
 const MODULES = {
   start: {
@@ -153,6 +153,70 @@ function statusName(status) {
   return String(status)
 }
 
+function sleep(milliseconds) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds))
+}
+
+function isMuMuDevice(device) {
+  const [name, , , , , config] = device
+  if (/mumu/i.test(name)) return true
+
+  try {
+    return Boolean(JSON.parse(config)?.extras?.mumu?.enable)
+  } catch {
+    return false
+  }
+}
+
+async function connectMuMuController() {
+  let lastError
+
+  for (let attempt = 1; attempt <= DEVICE_DISCOVERY_ATTEMPTS; attempt++) {
+    let controller
+
+    try {
+      // Do not pass a fixed ADB path here. The global finder asks MuMuManager for
+      // the running instance and returns its ADB path, serial and MuMu extras.
+      const devices = await maa.AdbController.find()
+      const device = devices?.find(isMuMuDevice)
+      if (device) {
+        const [, adbPath, address, screencapMethods, inputMethods, config] = device
+        controller = new maa.AdbController(
+          adbPath,
+          address,
+          screencapMethods,
+          inputMethods,
+          config,
+        )
+        controller.screenshot_target_short_side = 720
+
+        const connectJob = controller.post_connection()
+        await connectJob.wait()
+        if (connectJob.succeeded) {
+          const connectedController = controller
+          controller = undefined
+          return { controller: connectedController, address }
+        }
+
+        lastError = new Error(`MaaFramework 无法连接 ${address}`)
+      }
+    } catch (error) {
+      lastError = error
+    } finally {
+      controller?.destroy()
+    }
+
+    if (attempt === 1) {
+      const waitSeconds = (DEVICE_DISCOVERY_ATTEMPTS * DEVICE_DISCOVERY_DELAY_MS) / 1000
+      console.log(`[MaaYMZX] MuMu/ADB 尚未就绪，最多等待 ${waitSeconds} 秒……`)
+    }
+    if (attempt < DEVICE_DISCOVERY_ATTEMPTS) await sleep(DEVICE_DISCOVERY_DELAY_MS)
+  }
+
+  const reason = lastError instanceof Error ? `（最后一次错误：${lastError.message}）` : ''
+  throw new Error(`无法连接 MuMu 12，请确认模拟器已启动且 ADB 调试可用。${reason}`)
+}
+
 async function main() {
   const checkOnly = process.argv.includes('--check')
   const probeOnly = process.argv.includes('--probe')
@@ -183,24 +247,9 @@ async function main() {
     return
   }
 
-  console.log(`[MaaYMZX] 正在查找模拟器：${DEVICE_ADDRESS}`)
-  const devices = await maa.AdbController.find(ADB_PATH)
-  const device = devices?.find((item) => item[2] === DEVICE_ADDRESS)
-  if (!device) throw new Error(`未发现 ${DEVICE_ADDRESS}，请确认 MuMu 12 已启动且 ADB 调试可用。`)
-
-  const [, adbPath, address, screencapMethods, inputMethods, config] = device
-  const controller = new maa.AdbController(
-    adbPath,
-    address,
-    screencapMethods,
-    inputMethods,
-    config,
-  )
-  controller.screenshot_target_short_side = 720
-
-  const connectJob = controller.post_connection()
-  await connectJob.wait()
-  if (!connectJob.succeeded) throw new Error('MaaFramework 无法连接模拟器。')
+  console.log('[MaaYMZX] 正在通过 MuMuManager 查找模拟器……')
+  const { controller, address } = await connectMuMuController()
+  console.log(`[MaaYMZX] 已发现 MuMu：${address}`)
 
   console.log(`[MaaYMZX] 已连接，分辨率：${controller.resolution?.join('×') ?? '未知'}`)
   if (probeOnly) {
