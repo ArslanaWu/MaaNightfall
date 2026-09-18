@@ -25,7 +25,7 @@
     },
     "Drinks_NoonFree": {
         "recognition": "OCR",
-        "expected": "^(特权)?免费(补领|领取)?$",
+        "expected": "^(领取|(特权)?免费(补领|领取)?)$",
         "roi": [725, 545, 180, 60],
         "action": "Click",
         "post_delay": 1000,
@@ -35,7 +35,7 @@
     },
     "Drinks_AfternoonFree": {
         "recognition": "OCR",
-        "expected": "^(特权)?免费(补领|领取)?$",
+        "expected": "^(领取|(特权)?免费(补领|领取)?)$",
         "roi": [1030, 545, 180, 60],
         "action": "Click",
         "post_delay": 1000,

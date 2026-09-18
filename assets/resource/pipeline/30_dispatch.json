@@ -6,7 +6,8 @@
         "action": "Click",
         "target": [1090, 645],
         "post_delay": 800,
-        "next": "Dispatch_OpenSecretDispatch"
+        "max_hit": 3,
+        "next": ["Dispatch_OpenSecretDispatch", "Dispatch_OpenBusiness"]
     },
     "Dispatch_OpenSecretDispatch": {
         "recognition": "OCR",

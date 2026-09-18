@@ -6,7 +6,12 @@
         "action": "Click",
         "target": [1090, 645],
         "post_delay": 800,
-        "next": "Briefing_OpenMenu"
+        "max_hit": 3,
+        "next": [
+            "Briefing_OpenMenu",
+            "Briefing_OpenBusiness"
+        ],
+        "pre_delay": 600
     },
     "Briefing_OpenMenu": {
         "recognition": "OCR",
@@ -14,7 +19,10 @@
         "roi": [850, 300, 430, 300],
         "action": "Click",
         "post_delay": 1000,
-        "next": "Briefing_ListReady"
+        "next": [
+            "[JumpBack]Briefing_CloseLevelUp",
+            "Briefing_ListReady"
+        ]
     },
     "Briefing_ListReady": {
         "recognition": "OCR",
@@ -34,39 +42,55 @@
         "target": [230, 180],
         "max_hit": 1,
         "post_delay": 500,
-        "next": "Briefing_HandleSelected"
+        "next": [
+            "[JumpBack]Briefing_CloseLevelUp",
+            "Briefing_HandleSelected"
+        ]
     },
     "Briefing_SelectRow2": {
         "action": "Click",
         "target": [230, 264],
         "max_hit": 1,
         "post_delay": 500,
-        "next": "Briefing_HandleSelected"
+        "next": [
+            "[JumpBack]Briefing_CloseLevelUp",
+            "Briefing_HandleSelected"
+        ]
     },
     "Briefing_SelectRow3": {
         "action": "Click",
         "target": [230, 344],
         "max_hit": 1,
         "post_delay": 500,
-        "next": "Briefing_HandleSelected"
+        "next": [
+            "[JumpBack]Briefing_CloseLevelUp",
+            "Briefing_HandleSelected"
+        ]
     },
     "Briefing_SelectRow4": {
         "action": "Click",
         "target": [230, 424],
         "max_hit": 1,
         "post_delay": 500,
-        "next": "Briefing_HandleSelected"
+        "next": [
+            "[JumpBack]Briefing_CloseLevelUp",
+            "Briefing_HandleSelected"
+        ]
     },
     "Briefing_SelectRow5": {
         "action": "Click",
         "target": [230, 504],
         "max_hit": 1,
         "post_delay": 500,
-        "next": "Briefing_HandleSelected"
+        "next": [
+            "[JumpBack]Briefing_CloseLevelUp",
+            "Briefing_HandleSelected"
+        ]
     },
     "Briefing_HandleSelected": {
         "timeout": 12000,
         "next": [
+            "[JumpBack]Briefing_CloseLevelUp",
             "Briefing_CloseRewardAfterNext",
             "Briefing_AlreadySettled",
             "Briefing_MeetingSelected",
@@ -74,6 +98,34 @@
             "Briefing_GoBattle",
             "Briefing_ChoiceInList"
         ]
+    },
+    "Briefing_CloseLevelUp": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": {
+                    "type": "OCR",
+                    "param": {
+                        "expected": "提升|升级",
+                        "roi": [150, 410, 350, 130]
+                    }
+                }
+            },
+            {
+                "recognition": {
+                    "type": "OCR",
+                    "param": {
+                        "expected": "点击.*空白.*关闭",
+                        "roi": [430, 625, 430, 90]
+                    }
+                }
+            }
+        ],
+        "action": "Click",
+        "target": [640, 680],
+        "post_delay": 800,
+        "max_hit": 10,
+        "next": []
     },
     "Briefing_CloseRewardAfterNext": {
         "recognition": "OCR",
@@ -83,7 +135,10 @@
         "target": [640, 650],
         "post_delay": 800,
         "max_hit": 10,
-        "next": "Briefing_HandleSelected"
+        "next": [
+            "[JumpBack]Briefing_CloseLevelUp",
+            "Briefing_HandleSelected"
+        ]
     },
     "Briefing_ChoiceInList": {
         "recognition": "TemplateMatch",
@@ -93,6 +148,7 @@
         "action": "Click",
         "post_delay": 900,
         "next": [
+            "[JumpBack]Briefing_CloseLevelUp",
             "Briefing_CloseRewardAfterChoice",
             "Briefing_ListReady"
         ]
@@ -105,7 +161,10 @@
         "target": [640, 650],
         "post_delay": 800,
         "max_hit": 10,
-        "next": "Briefing_ListReady"
+        "next": [
+            "[JumpBack]Briefing_CloseLevelUp",
+            "Briefing_ListReady"
+        ]
     },
     "Briefing_ImmediateTravel": {
         "recognition": "OCR",
@@ -165,7 +224,10 @@
         "action": "Click",
         "target": [640, 680],
         "post_delay": 1000,
-        "next": "Briefing_BaseReadyToReturn"
+        "next": [
+            "[JumpBack]Briefing_CloseLevelUp",
+            "Briefing_BaseReadyToReturn"
+        ]
     },
     "Briefing_BaseReadyToReturn": {
         "recognition": "OCR",
@@ -175,12 +237,18 @@
         "target": [45, 40],
         "post_delay": 1200,
         "timeout": 15000,
-        "next": "Briefing_ListReady"
+        "next": [
+            "[JumpBack]Briefing_CloseLevelUp",
+            "Briefing_ListReady"
+        ]
     },
     "Briefing_AlreadySettled": {
         "recognition": "OCR",
         "expected": ["事件结束", "事件结算"],
-        "next": "Briefing_ListReady"
+        "next": [
+            "[JumpBack]Briefing_CloseLevelUp",
+            "Briefing_ListReady"
+        ]
     },
     "Briefing_Leave": {
         "action": "Click",
@@ -195,7 +263,8 @@
         "action": "Click",
         "target": [156, 40],
         "post_delay": 1200,
-        "next": "Rewards_OpenPlan"
+        "next": "Rewards_OpenPlan",
+        "pre_delay": 1200
     },
     "Briefing_MeetingSelected": {
         "recognition": "OCR",
@@ -240,11 +309,15 @@
         "target": [620, 350],
         "post_delay": 1500,
         "timeout": 30000,
-        "next": "Briefing_MeetingAfterTap"
+        "next": [
+            "[JumpBack]Briefing_CloseLevelUp",
+            "Briefing_MeetingAfterTap"
+        ]
     },
     "Briefing_MeetingAfterTap": {
         "timeout": 4000,
         "next": [
+            "[JumpBack]Briefing_CloseLevelUp",
             "Briefing_MeetingCloseReward",
             "Briefing_MeetingReturn"
         ],
@@ -256,7 +329,10 @@
         "roi": [400, 70, 480, 180],
         "action": "Click",
         "post_delay": 1100,
-        "next": "Briefing_MeetingAfterTap",
+        "next": [
+            "[JumpBack]Briefing_CloseLevelUp",
+            "Briefing_MeetingAfterTap"
+        ],
         "target": [640, 660],
         "max_hit": 6
     },
@@ -265,7 +341,10 @@
         "target": [640, 670],
         "max_hit": 5,
         "post_delay": 1200,
-        "next": "Briefing_MeetingAfterTap"
+        "next": [
+            "[JumpBack]Briefing_CloseLevelUp",
+            "Briefing_MeetingAfterTap"
+        ]
     },
     "Briefing_MeetingReturn": {
         "recognition": "And",
@@ -295,6 +374,7 @@
         "target": [45, 40],
         "post_delay": 1000,
         "next": [
+            "[JumpBack]Briefing_CloseLevelUp",
             "Briefing_CloseRewardAfterChoice",
             "Briefing_ListReady"
         ]
@@ -358,6 +438,7 @@
     "Briefing_BattleReturn": {
         "timeout": 60000,
         "next": [
+            "[JumpBack]Briefing_CloseLevelUp",
             "Briefing_BattleWon",
             "Briefing_BattleCloseReward",
             "Briefing_ListReady"
@@ -369,7 +450,10 @@
         "roi": [400, 70, 480, 180],
         "action": "Click",
         "post_delay": 1100,
-        "next": "Briefing_ListReady",
+        "next": [
+            "[JumpBack]Briefing_CloseLevelUp",
+            "Briefing_ListReady"
+        ],
         "target": [640, 660],
         "max_hit": 6
     }

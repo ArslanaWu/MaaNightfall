@@ -13,6 +13,9 @@ if(!load.succeeded) throw Error('Resource load failed')
 const tasker=new maa.Tasker(); tasker.resource=resource
 // Frames: ffmpeg -i VIDEO -vf "fps=2,scale=1280:720" PREFIX-%03d.png
 const cases=[
+ ['latest-019.png',['Briefing_CloseLevelUp'],[]],
+ ['latest-025.png',[],['Briefing_CloseLevelUp']],
+ ['latest-097.png',[],['Briefing_CloseLevelUp']],
  ['latest-007.png',['Briefing_MeetingSelected','Briefing_MeetingTravel'],['Briefing_AlreadySettled']],
  ['latest-011.png',['Briefing_MeetingTapCharacter','Briefing_MeetingReturn'],['Briefing_BattleStart']],
  ['latest-025.png',['Briefing_AlreadySettled'],[]],

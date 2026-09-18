@@ -14,6 +14,10 @@ assert.ok(load.succeeded)
 const png=(name)=>{const b=fs.readFileSync(path.join(frames,name));return b.buffer.slice(b.byteOffset,b.byteOffset+b.byteLength)}
 const reward='latest-097.png',role='latest-011.png',home='latest-133.png'
 const scenes=[
+ {name:'简报奖励后升级关闭并恢复列表',entry:'Briefing_CloseRewardAfterChoice',end:'Briefing_ListReady',initial:reward,steps:[
+ ['Briefing_CloseRewardAfterChoice','latest-019.png',[600,630,80,60]],
+ ['Briefing_CloseLevelUp','latest-025.png',[600,650,80,50]]
+ ]},
  {name:'免费礼包双重检查及两个页签',entry:'Shop_OpenRecommended',end:'Shop_Finish',initial:'latest-163.png',steps:[
  ['Shop_OpenRecommended','latest-163.png',[290,65,180,65]],
  ['Shop_DailyOpenFree','latest-165.png',[290,335,190,55]],
@@ -43,10 +47,10 @@ const scenes=[
  ['Briefing_MeetingCloseReward',role,[600,630,80,60]],
  ['Briefing_MeetingReturn','latest-025.png',[20,20,60,50]]
  ]},
- {name:'会面展示层恢复',entry:'Briefing_HandleSelected',end:'Briefing_ListReady',initial:'latest-007.png',steps:[
+ {name:'会面仁心升级后恢复',entry:'Briefing_HandleSelected',end:'Briefing_ListReady',initial:'latest-007.png',steps:[
  ['Briefing_MeetingTravel',role,[650,450,500,180]],
  ['Briefing_MeetingTapCharacter','latest-019.png',[600,320,60,60]],
- ['Briefing_MeetingDismissReveal',role,[600,630,80,70]],
+ ['Briefing_CloseLevelUp',role,[600,650,80,50]],
  ['Briefing_MeetingReturn','latest-025.png',[20,20,60,50]]
  ]},
  {name:'简报零消耗战斗和结算',entry:'Briefing_BattleStart',end:'Briefing_ListReady',initial:'latest-045.png',steps:[

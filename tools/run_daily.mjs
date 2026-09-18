@@ -296,9 +296,11 @@ async function main() {
   const taskJob = tasker.post_task(executionPlan.taskEntry)
   await taskJob.wait()
   const result = taskJob.get()
-  console.log(`[MaaYMZX] 任务状态：${statusName(result.status)}`)
-
-  const succeeded = taskJob.succeeded
+  const completedNodes = result.nodes.map((id) => tasker.node_detail(id))
+  const terminal = selectedModules.includes('close') ? 'SuccessExit' : 'KeepGameOpenFinish'
+  const aborted = completedNodes.some((node) => ['FatalExit', 'AbortTask', 'AbortAfterStopFailure'].includes(node?.name))
+  const succeeded = taskJob.succeeded && !aborted && completedNodes.some((node) => node?.name === terminal && node.completed)
+  console.log(`[MaaYMZX] 任务状态：${succeeded ? statusName(result.status) : 'Failed'}`)
   tasker.destroy()
   controller.destroy()
   resource.destroy()
