@@ -2,60 +2,44 @@
 
 基于 [MaaFramework](https://github.com/MaaXYZ/MaaFramework) 的《夜幕之下》日常自动化工具，支持按模块勾选执行，以及回车一键运行全部模块。
 
-目前主要适配 **Windows + MuMu 12 + 官服**。这是源码项目，首次使用需要安装运行库和 OCR 模型。
+目前主要适配 **Windows + MuMu 12 + 官服**。首次启动会自动安装运行库和 OCR 模型。
 
 ## 环境准备
 
-- Windows、Git、Node.js 22 或更高版本（包含 npm）。
+- Windows 10/11 x64、Git（下载源码 ZIP 时无需 Git）。首次安装需联网。
 - MuMu 12，已安装游戏并完成账号登录。游戏包名为 `com.bmystu.peng.gw`。
 - 模拟器分辨率设为 `900×1600`、DPI `320`，游戏横屏画面为 `1600×900`。识别时由 MaaFramework 缩放为短边 720。
-- 当前启动脚本检查 MuMu 默认安装路径 `C:\Program Files\Netease\MuMu\nx_main\adb.exe`；安装在其他位置时，需要修改 `tools/run_daily.ps1` 中的路径。
+- MuMu 连接由 MaaFramework 自动发现，不要求安装在默认目录。
 - 简报战斗使用已有队伍和自动战斗设置，请提前配置队伍并开启自动战斗。
 
-### 安装依赖
+### 新电脑首次运行
 
-克隆仓库或下载源码后，在项目目录运行：
+克隆仓库（或下载并解压源码 ZIP）后，启动 MuMu 并登录游戏，双击 run_daily.cmd。无需预装 Node.js、npm、Python 或开发工具。
 
-```bat
-npm ci
-```
+启动脚本会自动安装便携版 Node.js 22、最新稳定版 MaaFramework 和 OCR 模型，然后进入默认全选的模块菜单。运行库安装在本项目 runtimes/，OCR 安装在 assets/resource/model/ocr/，不需要管理员权限。首次下载可能需要几分钟；网络必须能访问 nodejs.org、registry.npmjs.org 和 download.maafw.xyz。
 
-下载 OCR 模型（[模板开发文档](docs/zh_cn/develop/how_to_develop.md)中提供下载入口），解压后确保存在：
-
-```text
-assets/resource/model/ocr/
-├── det.onnx
-├── keys.txt
-└── rec.onnx
-```
-
-接着安装 MaaFramework 运行库并检查资源：
+只完成安装或更新，不启动游戏任务：
 
 ```bat
-node_modules\.bin\maa-tools.cmd check
-node tools/run_daily.mjs --check
+update_runtime.cmd
 ```
 
-源码开发的运行库由 maa-tools 管理，位于用户目录的 `.maa-tools/install/`。当前实机验证版本为 MaaFramework 5.13.0；`maatools.config.mts` 默认使用 latest，升级后需要重新验证兼容性。OCR 模型和运行库不包含在 Git 仓库中。
+无人值守调用（没有暂停提示）：
 
-## 包内运行库
-
-启动器优先使用项目目录中的运行库，路径与当前工作目录无关：
-
-```text
-runtimes/
-├── node/
-│   └── node.exe
-└── maa/
-    └── node_modules/
-        ├── @maaxyz/maa-node/dist/index-client.js
-        ├── @maaxyz/maa-node/dist/index-server.js
-        └── …原生库及其他依赖
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/update_runtime.ps1
 ```
 
-Node.js 查找顺序：包内 runtimes/node/node.exe → PATH 中的 node.exe → 原有开发环境备用路径。MaaFramework 查找顺序：包内 runtimes/maa/ → 用户目录 .maa-tools/install/。命令行与通用界面的 Agent 共用这套规则。
+### 自动更新规则
 
-准备发行包时需要复制完整的 Maa Node 运行库及其依赖，不能只复制两个入口 JS 文件。包内目录存在但入口缺失时会报错，不会悄悄改用本机其他版本。runtimes/ 不提交到 Git。本次仅支持查找包内运行库，不会自动下载或生成发行包。
+- 每次通过 run_daily.cmd 启动都会在线检查 Node.js 22 最新补丁和 MaaFramework 最新稳定版；不会自动安装 alpha、beta、rc。
+- 更新先在临时目录下载和检查，验证 OCR 资源及 Agent 可加载后再替换；替换后的验证失败会恢复旧版。
+- 下载失败或断网时，启动流程会验证并继续使用本项目已有的可用运行库；首次安装没有可用运行库时会提示失败，联网后重新运行即可。手动更新失败返回非零状态。
+- OCR 使用固定的 ppocr_v6-small 模型，仅在缺失或不完整时补齐。不会每次重新下载模型。
+- 更新仅管理运行库与模型，不修改游戏任务脚本、兑换白名单和 .state/ 中的账号周限记录。更新项目代码仍使用 git pull。
+- 源码和发行包共用 runtimes/node/node.exe、runtimes/maa/node_modules/ 目录。直接运行 Node 脚本会跳过自动安装和更新；通用 UI 的 Agent 使用已安装运行库，首次使用前运行 update_runtime.cmd。
+
+开发工具依赖仅在修改代码时需要，可执行 runtimes\node\npm.cmd ci 安装。运行日常不需要安装这些开发依赖。
 
 ## 使用方式
 
@@ -126,8 +110,8 @@ run_daily.cmd --probe
 任务限额及刷新时间配置在 [task_policies.json](assets/task_policies.json)，默认北京时间周一 05:00 刷新。记录按游戏 UID 保存到本地 `.state/weekly.json`，重启不会清零。
 
 ```bat
-node tools/task_state.mjs status
-node tools/task_state.mjs set 你的UID poker 本周已完成次数
+runtimes\node\node.exe tools/task_state.mjs status
+runtimes\node\node.exe tools/task_state.mjs set 你的UID poker 本周已完成次数
 ```
 
 首次使用前，如果本周已经手动参与罪恶博弈，请先校准次数。开始匹配会预留次数，确认对手后记账并关闭游戏；异常中断遗留的 pending 记录会阻止再次匹配，需要核实实际情况后校准。**不要通过删除 .state 来清理缓存**，否则可能重复执行周限任务。
@@ -148,10 +132,11 @@ node tools/task_state.mjs set 你的UID poker 本周已完成次数
 无需连接游戏的基础测试：
 
 ```bat
-node tools/test_runtime.mjs
-node tools/test_module_menu.mjs
-node tools/test_modules.mjs
-node tools/test_weekly_exchange.mjs
+runtimes\node\node.exe tools/test_runtime.mjs
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/test_runtime_update.ps1
+runtimes\node\node.exe tools/test_module_menu.mjs
+runtimes\node\node.exe tools/test_modules.mjs
+runtimes\node\node.exe tools/test_weekly_exchange.mjs
 ```
 
 录像回归的素材准备和命令见 [回归测试说明](docs/testing.md)。原始视频、账号截图、抽帧和日志只保存在本地，不随仓库发布。

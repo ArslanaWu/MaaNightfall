@@ -12,9 +12,12 @@ $adbExe = 'C:\Program Files\Netease\MuMu\nx_main\adb.exe'
 $deviceAddress = '127.0.0.1:16384'
 $gamePackage = 'com.bmystu.peng.gw'
 
-if (-not (Test-Path -LiteralPath $adbExe -PathType Leaf)) {
-    Write-Error "MuMu ADB was not found: $adbExe"
-    exit 2
+. (Join-Path $PSScriptRoot 'runtime_update.ps1')
+try {
+    Invoke-ProjectRuntimeUpdate -ProjectRoot $projectRoot -Startup
+} catch {
+    Write-Host ('[MaaYMZX] Runtime setup failed: ' + $_.Exception.Message) -ForegroundColor Red
+    exit 1
 }
 
 . (Join-Path $PSScriptRoot 'resolve_node.ps1')
@@ -30,7 +33,7 @@ if ($Modules) { $arguments += @('--modules', ($Modules -join ' ')) }
 & $nodeExe @arguments
 $runResult = $LASTEXITCODE
 
-if ($runResult -ne 0 -and -not $Check) {
+if ($runResult -ne 0 -and -not $Check -and -not $Probe -and (Test-Path -LiteralPath $adbExe)) {
     Write-Host '[MaaYMZX] The run failed. Stopping the game...'
     & $adbExe -s $deviceAddress shell am force-stop $gamePackage *> $null
 }
