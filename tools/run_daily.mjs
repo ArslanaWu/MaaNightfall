@@ -1,74 +1,15 @@
+import {MODULES, MODULE_ORDER, WORK_MODULES, normalizeModules, createExecutionPlan} from './modules.mjs'
 import {registerActions} from './custom_actions.mjs'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import readline from 'node:readline/promises'
+import {selectModuleMenu} from './module_menu.mjs'
 import { pathToFileURL } from 'node:url'
 
 const PROJECT_ROOT = path.resolve(import.meta.dirname, '..')
 const RESOURCE_PATH = path.join(PROJECT_ROOT, 'assets', 'resource')
-const ENTRY = 'DailyRoutine'
 const DEVICE_DISCOVERY_ATTEMPTS = 30
 const DEVICE_DISCOVERY_DELAY_MS = 2000
-
-const MODULES = {
-  start: {
-    label: '启动游戏',
-  },
-  stamina: {
-    label: '清理体力',
-    entry: 'Stamina_OpenFamilyAffairs',
-    exit: 'Stamina_ReturnHome',
-  },
-  base: {
-    label: '据点产物与订单',
-    entry: 'Base_OpenRoom',
-    exit: 'Base_ReturnHome',
-  },
-  dispatch: {
-    label: '秘密派遣',
-    entry: 'Dispatch_OpenBusiness',
-    exit: 'Dispatch_Finish',
-  },
-  briefing: {
-    label: '巡夜简报',
-    entry: 'Briefing_OpenBusiness',
-    exit: 'Briefing_ReturnHome',
-  },
-  rewards: {
-    label: '每日/每周奖励',
-    entry: 'Rewards_OpenPlan',
-    exit: 'Rewards_Finish',
-  },
-  close: {
-    label: '关闭游戏',
-  },
-  drinks: {
-    label: '每日免费饮品',
-    entry: 'Drinks_OpenPlan',
-    exit: 'Drinks_Finish',
-  },
-  pass: {
-    label: '通行证任务与奖励',
-    entry: 'Pass_Open',
-    exit: 'Pass_Finish',
-  },
-  shop: {
-    label: '商店免费礼包',
-    entry: 'Shop_Open',
-    exit: 'Shop_Finish',
-  },
-}
-
-Object.assign(MODULES, {
-  friends: {label:'好友赠礼',entry:'Friends_Open',exit:'Friends_Finish'},
-  impression: {label:'首领印象属性激活',entry:'Impression_OpenBusiness',exit:'Impression_Finish'},
-  exchange: {label:'指定商店兑换',entry:'Exchange_Open',exit:'Exchange_Finish'},
-  poker: {label:'罪恶博弈（每周两次，匹配后关闭游戏）',entry:'Poker_Gate',exit:'Poker_Skip'},
-})
-
-const MODULE_ORDER = Object.keys(MODULES)
-const WORK_MODULES = ['drinks', 'friends', 'stamina', 'base', 'dispatch', 'briefing', 'impression', 'rewards', 'pass', 'shop', 'exchange', 'poker']
 
 function modulesArgument() {
   const pluralIndex = process.argv.indexOf('--modules')
@@ -78,74 +19,11 @@ function modulesArgument() {
   return singularIndex >= 0 ? process.argv[singularIndex + 1] : undefined
 }
 
-function normalizeModules(value) {
-  const requested = value
-    .split(/[,+\s]+/)
-    .map((item) => item.trim().toLowerCase())
-    .filter(Boolean)
-
-  if (requested.includes('all')) return [...MODULE_ORDER]
-
-  const invalid = requested.filter((name) => !(name in MODULES))
-  if (invalid.length) throw new Error(`未知模块：${invalid.join(', ')}`)
-
-  const selected = MODULE_ORDER.filter((name) => requested.includes(name))
-  if (!selected.length) throw new Error('至少需要选择一个模块。')
-  return selected
-}
-
 async function selectModules({ interactive }) {
   const argument = modulesArgument()
   if (argument) return normalizeModules(argument)
   if (!interactive || !process.stdin.isTTY) return [...MODULE_ORDER]
-
-  console.log('[MaaYMZX] 请选择本次执行的模块（可多选）：')
-  MODULE_ORDER.forEach((name, index) => console.log(`  ${index + 1}. ${MODULES[name].label}`))
-
-  const prompt = readline.createInterface({ input: process.stdin, output: process.stdout })
-  const answer = (await prompt.question('请输入序号，用空格分隔（直接回车执行全部）：')).trim()
-  prompt.close()
-
-  if (!answer) return [...MODULE_ORDER]
-
-  const numbers = answer
-    .split(/[,，+\s]+/)
-    .map((item) => Number(item))
-  if (numbers.some((number) => !Number.isInteger(number) || number < 1 || number > MODULE_ORDER.length)) {
-    throw new Error(`无效的模块序号：${answer}`)
-  }
-
-  const requested = numbers.map((number) => MODULE_ORDER[number - 1])
-  return MODULE_ORDER.filter((name) => requested.includes(name))
-}
-
-function createExecutionPlan(selectedModules) {
-  const selectedWork = WORK_MODULES.filter((name) => selectedModules.includes(name))
-  const shouldStart = selectedModules.includes('start')
-  const shouldClose = selectedModules.includes('close')
-  const terminal = shouldClose ? 'SuccessExit' : 'KeepGameOpenFinish'
-  const pipelineOverride = {}
-
-  if (shouldStart) {
-    pipelineOverride.Startup_HomeReady = {
-      next: selectedWork.length ? MODULES[selectedWork[0]].entry : terminal,
-    }
-  }
-
-  selectedWork.forEach((name, index) => {
-    const nextName = selectedWork[index + 1]
-    pipelineOverride[MODULES[name].exit] = {
-      next: nextName ? MODULES[nextName].entry : terminal,
-    }
-  })
-
-  const taskEntry = shouldStart
-    ? ENTRY
-    : selectedWork.length
-      ? MODULES[selectedWork[0]].entry
-      : terminal
-
-  return { pipelineOverride, taskEntry }
+  return selectModuleMenu(MODULE_ORDER.map(id => ({id, label: MODULES[id].label})))
 }
 
 function findMaaNode() {
@@ -244,6 +122,10 @@ async function main() {
   const checkOnly = process.argv.includes('--check')
   const probeOnly = process.argv.includes('--probe')
   const selectedModules = await selectModules({ interactive: !checkOnly && !probeOnly })
+  if (selectedModules === null) {
+    console.log('[MaaYMZX] 已取消执行。')
+    return
+  }
   const executionPlan = createExecutionPlan(selectedModules)
 
   await import(pathToFileURL(findMaaNode()).href)

@@ -42,30 +42,34 @@
 run_daily.cmd
 ```
 
-脚本会显示多选菜单：
+脚本会显示可用方向键操作的勾选菜单，默认全部选中：
 
-1. 启动游戏
-2. 清理体力
-3. 据点产物与订单
-4. 秘密派遣
-5. 巡夜简报
-6. 每日/每周奖励
-7. 关闭游戏
-8. 每日免费饮品
-9. 通行证任务与奖励
-10. 商店免费礼包
+1. 启动游戏（start）
+2. 每日免费饮品（drinks）
+3. 好友赠礼（friends）
+4. 清理体力（stamina）
+5. 据点产物与订单（base）
+6. 秘密派遣（dispatch）
+7. 巡夜简报（briefing）
+8. 首领印象属性激活（impression）
+9. 每日/每周奖励（rewards）
+10. 通行证任务与奖励（pass）
+11. 商店免费礼包（shop）
+12. 指定商店兑换（exchange）
+13. 罪恶博弈（每周两次，匹配后关闭游戏）（poker）
+14. 关闭游戏（close）
 
-输入多个序号时用空格分隔，例如 `1 3 5 7`；直接回车会执行全部模块。如果不选择“启动游戏”，请先把游戏停在主界面；如果不选择“关闭游戏”，任务完成后游戏会保持开启。
+使用 ↑↓ 移动光标，空格切换当前模块的勾选状态，回车执行勾选项。默认全部选中，直接回车一键执行全部。Esc 或 Ctrl+C 取消，不操作游戏。全部取消勾选时不会启动，需至少选择一项。
 
-也可以直接通过英文模块名运行指定组合：
+命令行示例：
 
-```bat
-run_daily.cmd start drinks stamina base dispatch briefing rewards pass shop close
-run_daily.cmd start base close
-run_daily.cmd close
-```
+    run_daily.cmd all
+    run_daily.cmd 1 3 10 14
+    run_daily.cmd start friends pass close
 
-模块名为 `start`、`stamina`、`base`、`dispatch`、`briefing`、`rewards`、`close`、`drinks`、`pass`、`shop`；`all` 表示全部模块。原有 1–7 菜单序号保留，新模块为 8–10；实际执行按上述流程顺序排列。单独领取新奖励可运行 `run_daily.cmd drinks pass shop`。
+不选启动游戏时，请先停在主界面；不选关闭游戏时，完成后保持开启。罪恶博弈匹配成功后会立即关闭游戏，仍放在所有工作模块最后。
+
+命令行参数仍支持英文模块名或序号，例如 run_daily.cmd start friends pass close。实际执行始终按菜单顺序，模块定义集中在 tools/modules.mjs。通用界面的现有一键日常入口保持原样。
 
 首次实际运行前，可以只测试运行库和模拟器连接，不操作游戏：
 
@@ -129,7 +133,7 @@ run_daily.cmd --check
 
 ## 补充视频功能（2026-09-18）
 
-新增菜单 11 friends（好友赠礼）、12 impression（首领印象激活）、13 exchange（白名单兑换）、14 poker（罪恶博弈）。all 包含新增模块；好友在清体力前执行，属性激活在简报后执行，兑换在免费礼包后执行，博弈始终最后执行。
+全部功能均已纳入上方的 14 项模块菜单；all 包含全部模块，罪恶博弈始终在工作模块最后执行。
 
 - 通行证必须确认奖励页内容才领取或返回；点击落空会重试。
 - 兑换白名单见 assets/exchange_whitelist.json。特供商店仅四种晋升许可Ⅱ、七种灵感Ⅱ、周限 50 次的作战报告；家族仅欲望特调Ⅱ、七种灵感Ⅱ、周限 10 次的作战报告。使用游戏的最大按钮，再核对名称、周限档位、数量、总价和余额。售罄和余额不足的跳过，不兑换图纸、金币或同名高价常驻商品。
