@@ -3,7 +3,7 @@ import path from 'node:path'
 import {pathToFileURL} from 'node:url'
 import {MODULES,MODULE_ORDER} from './modules.mjs'
 import {STAGES} from './stamina_plan.mjs'
-export function buildInterface({version='0.2.0',assetRoot='assets',toolRoot='tools'}={}){
+export function buildInterface({version=fs.readFileSync(new URL('../VERSION',import.meta.url),'utf8').trim(),assetRoot='assets',toolRoot='tools'}={}){
  const task=MODULE_ORDER.map(name=>({
   name,label:name==='stamina'?'体力计划':MODULES[name].label,
   entry:name==='stamina'?'Gui_Stamina':'Gui_'+name,default_check:true,

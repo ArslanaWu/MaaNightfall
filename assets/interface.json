@@ -2,7 +2,7 @@
   "interface_version": 2,
   "name": "MaaNightfall",
   "description": "夜幕之下日常助手 · 自用，可能不会稳定更新；使用风险自行承担。",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "github": "https://github.com/ArslanaWu/MaaNightfall",
   "license": "MIT",
   "welcome": "使用横屏模拟器并提前登录游戏。默认按顺序执行全部模块；体力计划可重复添加并排序，罪恶博弈请保持在工作任务最后。",
