@@ -45,19 +45,29 @@
     },
     "Dispatch_OpenRumor": {
         "recognition": "OCR",
-        "expected": ["获得夜行者传闻", "获得世俗传闻", "点击查看传闻"],
+        "expected": [
+            "获得夜行者传闻",
+            "获得世俗传闻",
+            "点击查看传闻"
+        ],
         "action": "Click",
-        "target": [640, 650],
+        "target": [
+            640,
+            650
+        ],
         "post_delay": 500,
-        "next": "Dispatch_Loop"
+        "next": "Dispatch_Loop",
+        "max_hit": 8
     },
     "Dispatch_CloseRumor": {
         "recognition": "OCR",
-        "expected": ["查看更多夜行者传闻", "查看更多世俗传闻"],
-        "action": "Click",
-        "target": [933, 143],
+        "expected": [
+            "查看更多夜行者传闻",
+            "查看更多世俗传闻"
+        ],
         "post_delay": 500,
-        "next": "Dispatch_Loop"
+        "next": "Dispatch_ClickRumorClose",
+        "max_hit": 8
     },
     "Dispatch_TaskReady": {
         "recognition": "OCR",
@@ -123,5 +133,20 @@
         "target": [156, 40],
         "post_delay": 1200,
         "next": "Briefing_OpenBusiness"
+    },
+    "Dispatch_ClickRumorClose": {
+        "recognition": "TemplateMatch",
+        "template": "dispatch/rumor_close.png",
+        "roi": [
+            780,
+            25,
+            250,
+            200
+        ],
+        "threshold": 0.8,
+        "action": "Click",
+        "post_delay": 800,
+        "max_hit": 8,
+        "next": "Dispatch_Loop"
     }
 }

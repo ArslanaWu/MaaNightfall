@@ -1,17 +1,17 @@
 import assert from 'node:assert/strict'
 import {MODULES, MODULE_ORDER, WORK_MODULES, normalizeModules, createExecutionPlan} from './modules.mjs'
 
-assert.equal(MODULE_ORDER.length,14)
+assert.equal(MODULE_ORDER.length,15)
 assert.deepEqual(normalizeModules(''),MODULE_ORDER)
 assert.deepEqual(normalizeModules('  '),MODULE_ORDER)
 assert.deepEqual(normalizeModules('all'),MODULE_ORDER)
-assert.deepEqual(normalizeModules('10，1 3,10 14'),['start','friends','pass','close'])
+assert.deepEqual(normalizeModules('10，1 3,10 15'),['start','friends','pass','close'])
 assert.deepEqual(normalizeModules('pass start friends close'),['start','friends','pass','close'])
 assert.equal(WORK_MODULES.at(-1),'poker')
 assert.ok(WORK_MODULES.indexOf('friends')<WORK_MODULES.indexOf('stamina'))
-for(const input of ['0','15','1.5','all typo','__proto__'])assert.throws(()=>normalizeModules(input))
+for(const input of ['0','16','1.5','all typo','__proto__'])assert.throws(()=>normalizeModules(input))
 
-const selected=createExecutionPlan(normalizeModules('10 1 3 14'))
+const selected=createExecutionPlan(normalizeModules('10 1 3 15'))
 assert.equal(selected.taskEntry,'DailyRoutine')
 assert.deepEqual(selected.pipelineOverride,{
   Startup_HomeReady:{next:'Friends_Open'},

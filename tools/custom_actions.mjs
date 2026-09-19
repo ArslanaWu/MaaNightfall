@@ -1,3 +1,5 @@
+import {IntervalLedger} from './interval_ledger.mjs'
+import {runChallenge} from './challenge_actions.mjs'
 import fs from 'node:fs'
 import path from 'node:path'
 import {WeeklyLedger} from './weekly_ledger.mjs'
@@ -17,9 +19,11 @@ export function createIO(context) {
   const controller=context.tasker.controller
   return {
     async shot(){const j=controller.post_screencap();await j.wait();if(!j.succeeded)throw Error('截图失败');return controller.cached_image},
+    async template(image,param){return Boolean((await context.run_recognition_direct('TemplateMatch',param,image))?.hit)},
     async ocr(image,roi,expected='.*') { const r=await context.run_recognition_direct('OCR',{roi,expected,threshold:0.85},image);return r?.detail?.filtered ?? [] },
     async click(x,y,delay=800){const j=controller.post_click(x,y);await j.wait();if(!j.succeeded)throw Error('点击失败');await wait(delay)},
     async swipe(up){const j=controller.post_swipe(1030,up?600:230,1030,up?240:630,550);await j.wait();if(!j.succeeded)throw Error('滚动失败');await wait(900)},
+    async drag(x1,y1,x2,y2){const j=controller.post_swipe(x1,y1,x2,y2,650);await j.wait();if(!j.succeeded)throw Error('滑动失败');await wait(900)},
     async stop(){const j=controller.post_stop_app('com.bmystu.peng.gw');await j.wait();if(!j.succeeded)throw Error('关闭游戏失败')},
     wait,
   }
@@ -91,6 +95,15 @@ export function registerActions(target, root) {
   const policies=JSON.parse(fs.readFileSync(path.join(root,'assets/task_policies.json'),'utf8'))
   const whitelist=JSON.parse(fs.readFileSync(path.join(root,'assets/exchange_whitelist.json'),'utf8'))
   const ledger=new WeeklyLedger(path.join(root,'.state/weekly.json'),policies)
+  const intervals=new IntervalLedger(path.join(root,'.state/intervals.json'))
+  target.register_custom_action('SilentDoor',async ({context})=>{
+    const io=createIO(context)
+    const identity=text(await io.ocr(await io.shot(),[0,670,240,50],'UID.*')).match(/UID\s*[:：]?\s*(\d+)/i)?.[1]
+    if(!identity)throw Error('无法识别 UID，停止周期挑战')
+    const result=await intervals.run(identity,'silentDoor',policies.intervalTasks.silentDoor.days,()=>runChallenge(io))
+    console.log(result.skipped?'[缄默暗门] 距上次完成未满 15 天，跳过':'[缄默暗门] 已记录完成，15 天后再执行')
+    return true
+  })
   let uid
   target.register_custom_action('ExchangeWhitelist',async ({context,param})=>{
     if(!whitelist[param.shop])throw Error('未知兑换页签')

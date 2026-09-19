@@ -72,8 +72,9 @@ run_daily.cmd
 | 10 | 通行证任务进度与奖励 | `pass` |
 | 11 | 商店免费礼包 | `shop` |
 | 12 | 指定商店兑换 | `exchange` |
-| 13 | 罪恶博弈，每周最多两次 | `poker` |
-| 14 | 关闭游戏 | `close` |
+| 13 | 缄默暗门，每 15 天一次 | `challenge` |
+| 14 | 罪恶博弈，每周最多两次 | `poker` |
+| 15 | 关闭游戏 | `close` |
 
 未选“启动游戏”时，请先将游戏停在主界面。未选“关闭游戏”时，普通流程完成后保持游戏开启。**罪恶博弈匹配成功后会立即关闭游戏**，因此安排在工作模块最后；每次运行最多匹配一局。
 
@@ -81,7 +82,7 @@ run_daily.cmd
 
 ```bat
 run_daily.cmd start friends pass close
-run_daily.cmd 1 3 10 14
+run_daily.cmd 1 3 10 15
 run_daily.cmd all
 ```
 
@@ -125,6 +126,22 @@ runtimes\node\node.exe tools/task_state.mjs set 你的UID poker 本周已完成�
 ```
 
 首次使用前，如果本周已经手动参与罪恶博弈，请先校准次数。开始匹配会预留次数，确认对手后记账并关闭游戏；异常中断遗留的 pending 记录会阻止再次匹配，需要核实实际情况后校准。**不要通过删除 .state 来清理缓存**，否则可能重复执行周限任务。
+
+## 缄默暗门周期挑战
+
+单独执行：`run_daily.cmd start challenge close`。进入“无尽之阶”，从最下方 01 关开始，使用自动组队。胜利点击“继续挑战”（兼容“继续战斗”），失败点击“退出战斗”并返回主界面，不重新挑战。
+
+每次进入组队页都会点击自动组队按钮（OCR 可能识别为“自行组队”），等待角色等级标记出现、没有空位且连续两次画面检查稳定后才开始战斗，不沿用残缺阵容。暂停是用户操作，脚本不会主动暂停或解除暂停。
+
+正常退出后按 UID 保存到 `.state/intervals.json`，满 15×24 小时后再次执行。首次没有记录会执行，打到失败并正常退出也算本轮完成；识别失败、超时不记录完成，下次可重试。周期配置在 `assets/task_policies.json` 的 `intervalTasks` 中，与每周次数独立。
+
+运行锁阻止并发挑战。强制终止进程可能遗留 `.state/intervals.json.lock`；确认没有其他任务运行后可删除此锁文件，保留 intervals.json 和 weekly.json 的账号记录。
+
+## GUI 选型
+
+选用 [MFAAvalonia](https://github.com/MaaXYZ/MFAAvalonia)，支持 Windows/macOS 及 GitHub 程序和资源更新。当前仍使用命令行菜单；自定义体力计划延后，与 Windows GUI 一起开发，先不适配 macOS。详细依据与集成约定见 [GUI 选型](docs/gui-choice.md)。
+
+GUI 的资源更新需要发布匹配的 GitHub Release 包，不能只推送源码。当前运行库仍由启动脚本更新，项目代码仍使用 git pull。
 
 ## 开发与验证
 

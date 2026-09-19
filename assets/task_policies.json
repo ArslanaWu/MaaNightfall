@@ -9,5 +9,10 @@
             "limit": 2,
             "period": "week"
         }
+    },
+    "intervalTasks": {
+        "silentDoor": {
+            "days": 15
+        }
     }
 }

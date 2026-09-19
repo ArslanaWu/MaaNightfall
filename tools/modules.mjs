@@ -12,6 +12,7 @@ export const MODULES = {
   pass: {label: '通行证任务与奖励', entry: 'Pass_Open', exit: 'Pass_Finish'},
   shop: {label: '商店免费礼包', entry: 'Shop_Open', exit: 'Shop_Finish'},
   exchange: {label: '指定商店兑换', entry: 'Exchange_Open', exit: 'Exchange_Finish'},
+  challenge: {label: '缄默暗门挑战（每 15 天一次）', entry: 'Challenge_Run', exit: 'Challenge_Finish'},
   poker: {label: '罪恶博弈（每周两次，匹配后关闭游戏）', entry: 'Poker_Gate', exit: 'Poker_Skip'},
   close: {label: '关闭游戏'},
 }

@@ -112,6 +112,7 @@
     "Stamina_HandleSweepResult": {
         "timeout": 60000,
         "next": [
+            "Stamina_CloseLevelUp",
             "Stamina_CloseLootDetails",
             "Stamina_CloseAcquired",
             "Stamina_StageAfterSweep"
@@ -122,5 +123,26 @@
         "expected": "古堡回声",
         "roi": [40, 530, 260, 130],
         "next": "Stamina_ReturnHome"
+    },
+    "Stamina_CloseLevelUp": {
+        "recognition": "OCR",
+        "expected": [
+            "等级提升",
+            "属性提升",
+            "等级提高"
+        ],
+        "roi": [
+            350,
+            150,
+            600,
+            350
+        ],
+        "action": "Click",
+        "target": [
+            640,
+            680
+        ],
+        "post_delay": 1000,
+        "next": "Stamina_HandleSweepResult"
     }
 }

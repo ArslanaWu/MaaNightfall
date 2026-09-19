@@ -1,0 +1,10 @@
+{
+    "Challenge_Run": {
+        "action": "Custom",
+        "custom_action": "SilentDoor",
+        "next": "Challenge_Finish"
+    },
+    "Challenge_Finish": {
+        "next": "Poker_Gate"
+    }
+}

@@ -229,7 +229,9 @@
         "post_delay": 1000,
         "next": [
             "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_BaseReadyToReturn"
+            "Briefing_CloseEventReward",
+            "Briefing_BaseReadyToReturn",
+            "Briefing_ListReady"
         ]
     },
     "Briefing_BaseReadyToReturn": {
@@ -417,7 +419,8 @@
                     "type": "OCR",
                     "param": {
                         "expected": "^0$",
-                        "roi": [1005, 615, 65, 50],
+                        "roi": [1005, 625, 65, 30],
+                        "only_rec": true,
                         "threshold": 0.8
                     }
                 }
@@ -443,15 +446,23 @@
     },
     "Briefing_BattleWon": {
         "recognition": "OCR",
-        "expected": [
-            "动成功",
-            "战斗胜利"
+        "expected": "成功",
+        "roi": [
+            65,
+            365,
+            330,
+            80
         ],
-        "roi": [30, 310, 650, 190],
         "action": "Click",
         "post_delay": 1500,
         "next": "Briefing_BattleReturn",
-        "target": [640, 680]
+        "target": [
+            640,
+            680
+        ],
+        "only_rec": true,
+        "threshold": 0.65,
+        "max_hit": 20
     },
     "Briefing_BattleReturn": {
         "timeout": 60000,
@@ -474,5 +485,28 @@
         ],
         "target": [640, 660],
         "max_hit": 6
+    },
+    "Briefing_CloseEventReward": {
+        "recognition": "OCR",
+        "expected": "获得物品",
+        "roi": [
+            420,
+            80,
+            440,
+            160
+        ],
+        "action": "Click",
+        "target": [
+            640,
+            680
+        ],
+        "post_delay": 1000,
+        "max_hit": 8,
+        "next": [
+            "[JumpBack]Briefing_CloseLevelUp",
+            "Briefing_CloseEventReward",
+            "Briefing_BaseReadyToReturn",
+            "Briefing_ListReady"
+        ]
     }
 }
