@@ -8,8 +8,9 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
+. (Join-Path $PSScriptRoot 'local_mumu.ps1')
 $adbExe = 'C:\Program Files\Netease\MuMu\nx_main\adb.exe'
-$deviceAddress = '127.0.0.1:16384'
+$deviceAddress = $null
 $gamePackage = 'com.bmystu.peng.gw'
 
 . (Join-Path $PSScriptRoot 'runtime_update.ps1')
@@ -35,7 +36,17 @@ $runResult = $LASTEXITCODE
 
 if ($runResult -ne 0 -and -not $Check -and -not $Probe -and (Test-Path -LiteralPath $adbExe)) {
     Write-Host '[MaaYMZX] The run failed. Stopping the game...'
-    & $adbExe -s $deviceAddress shell am force-stop $gamePackage *> $null
+    try {
+        . (Join-Path $PSScriptRoot 'mumu.ps1')
+        $manager = Find-MuMuManager $env:MAANIGHTFALL_MUMU_MANAGER
+        $info = Get-MuMuInstance $manager ([int]$env:MAANIGHTFALL_MUMU_INSTANCE)
+        if ($info.is_android_started -and [int]$info.adb_port -gt 0) {
+            $deviceAddress = ([string]$info.adb_host_ip + ':' + $info.adb_port)
+            & $adbExe -s $deviceAddress shell am force-stop $gamePackage *> $null
+        }
+    } catch {
+        Write-Warning 'Could not resolve the selected emulator; skipping cleanup.'
+    }
 }
 
 exit $runResult

@@ -114,7 +114,7 @@ run_daily.cmd --probe
 
 `--check` 只检查运行库和资源；`--probe` 额外检查模拟器连接，不执行游戏任务。确认执行后，脚本通过 MuMuManager 启动默认 0 号实例，最多等待 Android 和 ADB 就绪 120 秒，再由 MaaFramework 连接对应实例。已启动时直接复用。菜单取消和 --check 不启动模拟器；--probe 会启动模拟器并验证连接，不执行游戏任务。自定义安装位置可设置环境变量 MAANIGHTFALL_MUMU_MANAGER，实例编号可设置 MAANIGHTFALL_MUMU_INSTANCE。
 
-日志和失败截图写入 `debug/`。执行失败会停止任务并尝试关闭游戏；PowerShell 兜底关闭逻辑使用 `127.0.0.1:16384`，非默认实例需同时核对 `tools/run_daily.ps1` 中的地址。
+日志和失败截图写入 `debug/`。执行失败会停止任务并尝试关闭游戏；PowerShell 兜底关闭逻辑会查询所选 MuMu 实例的实际地址；无法确认设备时跳过关闭，不操作其他实例。
 
 ## 与 MaaYuan 串行执行
 

@@ -3,6 +3,7 @@ param([switch]$PrepareOnly)
 [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
+. (Join-Path $PSScriptRoot 'local_mumu.ps1')
 $guiPath = Join-Path $projectRoot 'MFAAvalonia.exe'
 if (!$PrepareOnly -and (Get-Process MFAAvalonia -ErrorAction SilentlyContinue | Where-Object { $_.Path -eq $guiPath })) {
     Start-Process -FilePath $guiPath -WorkingDirectory $projectRoot
