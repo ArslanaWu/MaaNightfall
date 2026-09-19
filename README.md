@@ -141,7 +141,7 @@ runtimes\node\node.exe tools/task_state.mjs set 你的UID poker 本周已完成�
 
 ## Windows GUI
 
-双击 **run_gui.cmd** 启动 [MFAAvalonia](https://github.com/MaaXYZ/MFAAvalonia) 图形界面。默认勾选全部模块；体力计划支持选择录像中的 11 个关卡、指定次数、重复添加和拖动排序。保留原命令行菜单，当前只适配 Windows。使用与打包方式见 [GUI 使用说明](docs/gui.md)。
+发行包解压后双击 **MaaNightfall.exe** 启动（无命令行窗口）。源码首次使用可运行 `powershell -NoProfile -ExecutionPolicy Bypass -File tools/build_launcher.ps1` 生成 EXE，也保留 `run_gui.cmd` 入口。GUI 使用 [MFAAvalonia](https://github.com/MaaXYZ/MFAAvalonia) 图形界面。默认勾选全部模块；体力计划支持选择录像中的 11 个关卡、指定次数、重复添加和拖动排序。保留原命令行菜单，当前只适配 Windows。使用与打包方式见 [GUI 使用说明](docs/gui.md)。
 
 GUI 启动时检查本项目的 GitHub Release 更新。发行包包含配套运行库，更新保留本地配置和周期记录；源码用户使用 git pull。尚未发布 Release 时，没有可下载的更新包。
 

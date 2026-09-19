@@ -1,6 +1,6 @@
 # Windows 图形界面
 
-双击项目根目录的 **run_gui.cmd**。首次从源码启动会准备 Node、MaaFramework、OCR、MFAAvalonia 以及缺少的 .NET 10 运行库，无须自己安装 Node 或 Python。需要网络，游戏和 MuMu 仍须自行安装并登录。
+发行包解压后，双击根目录的 **MaaNightfall.exe**。启动器会在后台准备环境并打开 GUI，不弹出命令行窗口；失败时会弹出错误提示，日志保存在 `debug/launcher/`。请保留完整目录，不要单独移动 EXE。源码首次使用先执行 `powershell -NoProfile -ExecutionPolicy Bypass -File tools/build_launcher.ps1` 生成启动器，也可以继续使用 `run_gui.cmd`。首次从源码启动会准备 Node、MaaFramework、OCR、MFAAvalonia 以及缺少的 .NET 10 运行库，无须自己安装 Node 或 Python。需要网络，游戏和 MuMu 仍须自行安装并登录。
 
 GUI 和命令行共用同一项目目录的 .state，缄默暗门下一次时间和罪恶博弈周限不会因切换入口而重置。请勿同时运行两套游戏任务。原 run_daily.cmd 的空格勾选、上下选择和回车执行保持可用。
 
@@ -46,4 +46,4 @@ GUI 的更新源是本项目 GitHub，默认启动检查版本，不自动安装
 
 输出在 dist/，只包含程序和资源，不含你的账号记录、日志、截图或现有 GUI 配置。发版工作流仅构建 Windows x64；GitHub Actions 可以手动构建测试包，推送 v 开头的版本标签时发布 Release。目前保留跨平台任务逻辑，未适配 macOS。
 
-已有安装升级时保留 config/ 与 .state/；不要删除这两个目录。源码用户继续用 git pull 后启动 run_gui.cmd。
+已有安装升级时保留 config/ 与 .state/；不要删除这两个目录。源码用户更新后可重新运行 `tools/build_launcher.ps1` 编译启动器，再双击 `MaaNightfall.exe`；原 `run_gui.cmd` 仍可使用。打包脚本会自动编译并包含启动器。

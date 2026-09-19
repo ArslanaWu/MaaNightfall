@@ -1,5 +1,6 @@
 [CmdletBinding()]
 param([switch]$PrepareOnly)
+[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $guiPath = Join-Path $projectRoot 'MFAAvalonia.exe'
