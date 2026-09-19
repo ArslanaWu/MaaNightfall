@@ -1,39 +1,385 @@
 {
-    "interface_version": 2,
-    "name": "MaaYMZX",
-    "description": "《夜幕之下》日常任务自动化助手",
-    "license": "MIT",
-    "welcome": "请使用 1600×900、DPI 320 的横屏模拟器。首次运行前请确认游戏已经登录。",
-    "version": "0.1.0",
-    "controller": [
-        {
-            "name": "MuMu 模拟器",
-            "type": "Adb",
-            "display_short_side": 720
-        }
-    ],
-    "resource": [
-        {
-            "name": "官服",
-            "path": [
-                "./resource"
-            ]
-        }
-    ],
-    "task": [
-        {
-            "name": "一键日常",
-            "entry": "DailyRoutine"
-        }
-    ],
-    "agent": {
-        "child_exec": "powershell.exe",
-        "child_args": [
-            "-NoProfile",
-            "-ExecutionPolicy",
-            "Bypass",
-            "-File",
-            "{PROJECT_DIR}/../tools/run_agent.ps1"
-        ]
+  "interface_version": 2,
+  "name": "MaaNightfall",
+  "description": "夜幕之下日常助手 · 自用，可能不会稳定更新；使用风险自行承担。",
+  "version": "0.2.0",
+  "github": "https://github.com/ArslanaWu/MaaNightfall",
+  "license": "MIT",
+  "welcome": "使用横屏模拟器并提前登录游戏。默认按顺序执行全部模块；体力计划可重复添加并排序，罪恶博弈请保持在工作任务最后。",
+  "controller": [
+    {
+      "name": "MuMu 模拟器",
+      "type": "Adb",
+      "display_short_side": 720
     }
+  ],
+  "resource": [
+    {
+      "name": "官服",
+      "path": [
+        "{PROJECT_DIR}/./resource"
+      ]
+    }
+  ],
+  "pretask": {
+    "name": "prepare_mumu",
+    "label": "启动 MuMu",
+    "exec": "{PROJECT_DIR}/../../runtimes/node/node.exe",
+    "args": [
+      "../../tools/gui_prepare.mjs"
+    ]
+  },
+  "agent": {
+    "child_exec": "{PROJECT_DIR}/../runtimes/node/node.exe",
+    "child_args": [
+      "{PROJECT_DIR}/../tools/agent_server.mjs"
+    ]
+  },
+  "task": [
+    {
+      "name": "start",
+      "label": "启动游戏",
+      "entry": "Gui_start",
+      "default_check": true
+    },
+    {
+      "name": "drinks",
+      "label": "每日免费饮品",
+      "entry": "Gui_drinks",
+      "default_check": true
+    },
+    {
+      "name": "friends",
+      "label": "好友赠礼",
+      "entry": "Gui_friends",
+      "default_check": true
+    },
+    {
+      "name": "stamina",
+      "label": "体力计划",
+      "entry": "Gui_Stamina",
+      "default_check": true,
+      "description": "每条计划选择一个 X 难度关卡及次数。可通过添加任务重复添加体力计划，拖动排序；消耗剩余体力的条目请放在最后。不购买体力。",
+      "option": [
+        "stamina_stage",
+        "stamina_mode"
+      ]
+    },
+    {
+      "name": "base",
+      "label": "据点产物与订单",
+      "entry": "Gui_base",
+      "default_check": true
+    },
+    {
+      "name": "dispatch",
+      "label": "秘密派遣",
+      "entry": "Gui_dispatch",
+      "default_check": true
+    },
+    {
+      "name": "briefing",
+      "label": "巡夜简报",
+      "entry": "Gui_briefing",
+      "default_check": true
+    },
+    {
+      "name": "impression",
+      "label": "首领印象属性激活",
+      "entry": "Gui_impression",
+      "default_check": true
+    },
+    {
+      "name": "rewards",
+      "label": "每日/每周奖励",
+      "entry": "Gui_rewards",
+      "default_check": true
+    },
+    {
+      "name": "pass",
+      "label": "通行证任务与奖励",
+      "entry": "Gui_pass",
+      "default_check": true
+    },
+    {
+      "name": "shop",
+      "label": "商店免费礼包",
+      "entry": "Gui_shop",
+      "default_check": true
+    },
+    {
+      "name": "exchange",
+      "label": "指定商店兑换",
+      "entry": "Gui_exchange",
+      "default_check": true
+    },
+    {
+      "name": "challenge",
+      "label": "缄默暗门挑战（每 15 天一次）",
+      "entry": "Gui_challenge",
+      "default_check": true
+    },
+    {
+      "name": "poker",
+      "label": "罪恶博弈（每周两次，匹配后关闭游戏）",
+      "entry": "Gui_poker",
+      "default_check": true
+    },
+    {
+      "name": "close",
+      "label": "关闭游戏",
+      "entry": "Gui_close",
+      "default_check": true
+    }
+  ],
+  "option": {
+    "stamina_stage": {
+      "type": "select",
+      "label": "关卡（难度 X）",
+      "default_case": "castle",
+      "cases": [
+        {
+          "name": "castle",
+          "label": "古堡回声",
+          "pipeline_override": {
+            "Gui_StaminaStage": {
+              "attach": {
+                "stage": "castle"
+              }
+            }
+          }
+        },
+        {
+          "name": "drill",
+          "label": "作战演练",
+          "pipeline_override": {
+            "Gui_StaminaStage": {
+              "attach": {
+                "stage": "drill"
+              }
+            }
+          }
+        },
+        {
+          "name": "money",
+          "label": "金钱时代",
+          "pipeline_override": {
+            "Gui_StaminaStage": {
+              "attach": {
+                "stage": "money"
+              }
+            }
+          }
+        },
+        {
+          "name": "dock",
+          "label": "码头进击",
+          "pipeline_override": {
+            "Gui_StaminaStage": {
+              "attach": {
+                "stage": "dock"
+              }
+            }
+          }
+        },
+        {
+          "name": "parking",
+          "label": "车场突围",
+          "pipeline_override": {
+            "Gui_StaminaStage": {
+              "attach": {
+                "stage": "parking"
+              }
+            }
+          }
+        },
+        {
+          "name": "park",
+          "label": "园区增援",
+          "pipeline_override": {
+            "Gui_StaminaStage": {
+              "attach": {
+                "stage": "park"
+              }
+            }
+          }
+        },
+        {
+          "name": "platform",
+          "label": "站台攻歼",
+          "pipeline_override": {
+            "Gui_StaminaStage": {
+              "attach": {
+                "stage": "platform"
+              }
+            }
+          }
+        },
+        {
+          "name": "party",
+          "label": "欲望酒会",
+          "pipeline_override": {
+            "Gui_StaminaStage": {
+              "attach": {
+                "stage": "party"
+              }
+            }
+          }
+        },
+        {
+          "name": "dungeon",
+          "label": "地牢血痕",
+          "pipeline_override": {
+            "Gui_StaminaStage": {
+              "attach": {
+                "stage": "dungeon"
+              }
+            }
+          }
+        },
+        {
+          "name": "chamber",
+          "label": "密室残垣",
+          "pipeline_override": {
+            "Gui_StaminaStage": {
+              "attach": {
+                "stage": "chamber"
+              }
+            }
+          }
+        },
+        {
+          "name": "city",
+          "label": "市井焦土",
+          "pipeline_override": {
+            "Gui_StaminaStage": {
+              "attach": {
+                "stage": "city"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "stamina_mode": {
+      "type": "select",
+      "label": "执行次数",
+      "default_case": "all",
+      "cases": [
+        {
+          "name": "all",
+          "label": "消耗可用体力",
+          "pipeline_override": {
+            "Gui_StaminaMode": {
+              "attach": {
+                "mode": "all"
+              }
+            }
+          }
+        },
+        {
+          "name": "count",
+          "label": "指定次数",
+          "option": [
+            "stamina_count"
+          ],
+          "pipeline_override": {
+            "Gui_StaminaMode": {
+              "attach": {
+                "mode": "count"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "stamina_count": {
+      "type": "input",
+      "label": "次数",
+      "inputs": [
+        {
+          "name": "count",
+          "label": "扫荡次数",
+          "default": "1",
+          "pipeline_type": "int",
+          "verify": "^[1-9][0-9]{0,2}$"
+        }
+      ],
+      "pipeline_override": {
+        "Gui_StaminaCount": {
+          "attach": {
+            "count": "{count}"
+          }
+        }
+      }
+    }
+  },
+  "preset": [
+    {
+      "name": "daily",
+      "label": "完整日常",
+      "task": [
+        {
+          "name": "start",
+          "enabled": true
+        },
+        {
+          "name": "drinks",
+          "enabled": true
+        },
+        {
+          "name": "friends",
+          "enabled": true
+        },
+        {
+          "name": "stamina",
+          "enabled": true
+        },
+        {
+          "name": "base",
+          "enabled": true
+        },
+        {
+          "name": "dispatch",
+          "enabled": true
+        },
+        {
+          "name": "briefing",
+          "enabled": true
+        },
+        {
+          "name": "impression",
+          "enabled": true
+        },
+        {
+          "name": "rewards",
+          "enabled": true
+        },
+        {
+          "name": "pass",
+          "enabled": true
+        },
+        {
+          "name": "shop",
+          "enabled": true
+        },
+        {
+          "name": "exchange",
+          "enabled": true
+        },
+        {
+          "name": "challenge",
+          "enabled": true
+        },
+        {
+          "name": "poker",
+          "enabled": true
+        },
+        {
+          "name": "close",
+          "enabled": true
+        }
+      ]
+    }
+  ]
 }

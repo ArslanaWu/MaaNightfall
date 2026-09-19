@@ -72,3 +72,11 @@ runtimes\node\node.exe tools/test_challenge_video.mjs .analysis/video11 你的�
 - 缄默暗门实机从 01 关开始，点击自动组队并检查阵容；连续胜利两场后继续挑战，第三场失败后退出并返回主界面，记录周期完成。再次运行成功跳过。
 - 商店兑换当天部分额度已用完或余额不足，验证了跳过分支；新的实际兑换未重复验证。暗门全部通关分支只做模拟测试，未实机通关。
 - 自定义体力计划与 GUI 尚未实现；桌面 PC 游戏流程未修改。
+
+## Windows GUI 与体力计划
+
+基础测试：tools/test_gui.mjs、tools/test_stamina_plan.mjs、tools/test_gui_agent.mjs。后者启动本项目 Node Agent 检查 IPC，不操作游戏。覆盖默认模块顺序、失败传递、计划校验、多批次数、体力不足与消耗异常。
+
+接口由 tools/build_gui_interface.mjs 生成；修改后重新生成 assets/interface.json，再运行 Schema 检查。源码启动时还会生成根目录 interface.json。发行构建参见 docs/gui.md。
+
+2026-09-19：11 个关卡 X 难度入口均完成实机导航验证；通过真实 MFAAvalonia 配置与 Node Agent 执行“启动游戏→作战演练指定 2 次→缄默暗门周期跳过”，扫荡次数准确，任务链正常结束。全部关卡没有逐一消耗体力扫荡；其余关卡验证到难度选择。

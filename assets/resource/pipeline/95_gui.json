@@ -1,0 +1,137 @@
+{
+  "Gui_start": {
+    "action": "Custom",
+    "custom_action": "GuiModule",
+    "custom_action_param": {
+      "module": "start"
+    },
+    "on_error": []
+  },
+  "Gui_drinks": {
+    "action": "Custom",
+    "custom_action": "GuiModule",
+    "custom_action_param": {
+      "module": "drinks"
+    },
+    "on_error": []
+  },
+  "Gui_friends": {
+    "action": "Custom",
+    "custom_action": "GuiModule",
+    "custom_action_param": {
+      "module": "friends"
+    },
+    "on_error": []
+  },
+  "Gui_base": {
+    "action": "Custom",
+    "custom_action": "GuiModule",
+    "custom_action_param": {
+      "module": "base"
+    },
+    "on_error": []
+  },
+  "Gui_dispatch": {
+    "action": "Custom",
+    "custom_action": "GuiModule",
+    "custom_action_param": {
+      "module": "dispatch"
+    },
+    "on_error": []
+  },
+  "Gui_briefing": {
+    "action": "Custom",
+    "custom_action": "GuiModule",
+    "custom_action_param": {
+      "module": "briefing"
+    },
+    "on_error": []
+  },
+  "Gui_impression": {
+    "action": "Custom",
+    "custom_action": "GuiModule",
+    "custom_action_param": {
+      "module": "impression"
+    },
+    "on_error": []
+  },
+  "Gui_rewards": {
+    "action": "Custom",
+    "custom_action": "GuiModule",
+    "custom_action_param": {
+      "module": "rewards"
+    },
+    "on_error": []
+  },
+  "Gui_pass": {
+    "action": "Custom",
+    "custom_action": "GuiModule",
+    "custom_action_param": {
+      "module": "pass"
+    },
+    "on_error": []
+  },
+  "Gui_shop": {
+    "action": "Custom",
+    "custom_action": "GuiModule",
+    "custom_action_param": {
+      "module": "shop"
+    },
+    "on_error": []
+  },
+  "Gui_exchange": {
+    "action": "Custom",
+    "custom_action": "GuiModule",
+    "custom_action_param": {
+      "module": "exchange"
+    },
+    "on_error": []
+  },
+  "Gui_challenge": {
+    "action": "Custom",
+    "custom_action": "GuiModule",
+    "custom_action_param": {
+      "module": "challenge"
+    },
+    "on_error": []
+  },
+  "Gui_poker": {
+    "action": "Custom",
+    "custom_action": "GuiModule",
+    "custom_action_param": {
+      "module": "poker"
+    },
+    "on_error": []
+  },
+  "Gui_close": {
+    "action": "Custom",
+    "custom_action": "GuiModule",
+    "custom_action_param": {
+      "module": "close"
+    },
+    "on_error": []
+  },
+  "Gui_Stamina": {
+    "action": "Custom",
+    "custom_action": "StaminaPlan",
+    "on_error": []
+  },
+  "Gui_StaminaStage": {
+    "attach": {
+      "stage": "castle"
+    },
+    "on_error": []
+  },
+  "Gui_StaminaMode": {
+    "attach": {
+      "mode": "all"
+    },
+    "on_error": []
+  },
+  "Gui_StaminaCount": {
+    "attach": {
+      "count": 1
+    },
+    "on_error": []
+  }
+}

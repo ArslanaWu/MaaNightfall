@@ -1,0 +1,90 @@
+[
+  {
+    "id": "drill",
+    "name": "作战演练",
+    "category": "作战",
+    "substage": null,
+    "cost": 10,
+    "difficulty": "X"
+  },
+  {
+    "id": "money",
+    "name": "金钱时代",
+    "category": "金钱",
+    "substage": null,
+    "cost": 10,
+    "difficulty": "X"
+  },
+  {
+    "id": "dock",
+    "name": "码头进击",
+    "category": "码头",
+    "substage": "码头进击",
+    "cost": 30,
+    "difficulty": "X"
+  },
+  {
+    "id": "parking",
+    "name": "车场突围",
+    "category": "码头",
+    "substage": "车场突围",
+    "cost": 30,
+    "difficulty": "X"
+  },
+  {
+    "id": "park",
+    "name": "园区增援",
+    "category": "码头",
+    "substage": "园区增援",
+    "cost": 30,
+    "difficulty": "X"
+  },
+  {
+    "id": "platform",
+    "name": "站台攻歼",
+    "category": "码头",
+    "substage": "站台攻歼",
+    "cost": 30,
+    "difficulty": "X"
+  },
+  {
+    "id": "party",
+    "name": "欲望酒会",
+    "category": "欲望",
+    "substage": null,
+    "cost": 10,
+    "difficulty": "X"
+  },
+  {
+    "id": "dungeon",
+    "name": "地牢血痕",
+    "category": "家族",
+    "substage": "地牢血痕",
+    "cost": 30,
+    "difficulty": "X"
+  },
+  {
+    "id": "chamber",
+    "name": "密室残垣",
+    "category": "家族",
+    "substage": "密室残垣",
+    "cost": 30,
+    "difficulty": "X"
+  },
+  {
+    "id": "city",
+    "name": "市井焦土",
+    "category": "家族",
+    "substage": "市井焦土",
+    "cost": 30,
+    "difficulty": "X"
+  },
+  {
+    "id": "castle",
+    "name": "古堡回声",
+    "category": "家族",
+    "substage": "古堡回声",
+    "cost": 30,
+    "difficulty": "X"
+  }
+]

@@ -18,12 +18,12 @@ const wait=ms=>new Promise(r=>setTimeout(r,ms))
 export function createIO(context) {
   const controller=context.tasker.controller
   return {
-    async shot(){const j=controller.post_screencap();await j.wait();if(!j.succeeded)throw Error('截图失败');return controller.cached_image},
+    async shot(){if(controller.stopping||context.tasker.stopping)throw Error('任务已停止');const j=controller.post_screencap();await j.wait();if(!j.succeeded)throw Error('截图失败');return controller.cached_image},
     async template(image,param){return Boolean((await context.run_recognition_direct('TemplateMatch',param,image))?.hit)},
     async ocr(image,roi,expected='.*') { const r=await context.run_recognition_direct('OCR',{roi,expected,threshold:0.85},image);return r?.detail?.filtered ?? [] },
-    async click(x,y,delay=800){const j=controller.post_click(x,y);await j.wait();if(!j.succeeded)throw Error('点击失败');await wait(delay)},
+    async click(x,y,delay=800){if(context.tasker.stopping)throw Error('任务已停止');const j=controller.post_click(x,y);await j.wait();if(!j.succeeded)throw Error('点击失败');await wait(delay)},
     async swipe(up){const j=controller.post_swipe(1030,up?600:230,1030,up?240:630,550);await j.wait();if(!j.succeeded)throw Error('滚动失败');await wait(900)},
-    async drag(x1,y1,x2,y2){const j=controller.post_swipe(x1,y1,x2,y2,650);await j.wait();if(!j.succeeded)throw Error('滑动失败');await wait(900)},
+    async drag(x1,y1,x2,y2){if(context.tasker.stopping)throw Error('任务已停止');const j=controller.post_swipe(x1,y1,x2,y2,650);await j.wait();if(!j.succeeded)throw Error('滑动失败');await wait(900)},
     async stop(){const j=controller.post_stop_app('com.bmystu.peng.gw');await j.wait();if(!j.succeeded)throw Error('关闭游戏失败')},
     wait,
   }

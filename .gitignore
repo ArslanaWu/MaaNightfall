@@ -76,3 +76,19 @@ Desktop.ini
 
 # Portable release runtimes
 /runtimes/
+
+# Generated MFAAvalonia application and user data
+/MFAAvalonia*
+/MaaAgentBinary/
+/libloader.dll
+/libs/
+/plugins/
+/DependencySetup*
+/interface.json
+/resource/
+/agent/
+/logs/
+/temp/
+/backup/
+/appsettings.json
+/.gui-release

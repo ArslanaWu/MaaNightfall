@@ -8,6 +8,7 @@ on:
       - ".github/workflows/check.yml"
       - "assets/**"
       - "**.py"
+      - "tools/**.mjs"
   pull_request:
     branches:
       - "**"
@@ -15,6 +16,7 @@ on:
       - ".github/workflows/check.yml"
       - "assets/**"
       - "**.py"
+      - "tools/**.mjs"
   workflow_dispatch:
 
 jobs:
@@ -34,6 +36,13 @@ jobs:
         run: |
           npm ci
           npx @nekosu/maa-tools check
+
+      - name: Test GUI and stamina plan
+        run: |
+          node tools/test_gui.mjs
+          node tools/test_stamina_plan.mjs
+          node tools/test_modules.mjs
+          node tools/test_challenge.mjs
 
       - name: Install maafw
         run: |

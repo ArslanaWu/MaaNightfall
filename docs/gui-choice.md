@@ -4,11 +4,11 @@
 
 MaaFramework 官方将其列为通用 GUI。它提供 Windows x64/arm64、macOS x64/arm64 和 Linux 发布目标，支持 Project Interface V2、自定义 Agent、任务选项和命令行自动执行，并支持通过 GitHub 检查及安装程序与资源更新。对本项目而言，已有 Pipeline 和 Node Agent 可以继续使用。
 
-本阶段完成选型，仍使用现有命令行菜单。后续将自定义体力计划列表与 Windows GUI 一起开发，先不适配 macOS。11 种日常关卡已从用户录像确认，后续列表支持关卡、次数、顺序和剩余体力选项。
+已接入 Windows GUI 与自定义体力计划，命令行菜单继续保留。使用 GUI 可重复添加的任务列表表达有序计划，每条独立配置关卡与次数；支持录像中的 11 种 X 难度关卡。暂不适配 macOS。详见 [使用说明](gui.md)。
 
 集成约定：
 - 游戏任务和计划数据保持独立，不绑定 Windows 窗口代码；模拟器启动与 Agent 入口单独做平台适配。
-- GUI 对接 Project Interface V2。可变长度体力计划需要列表编辑与验证，不能只把次数硬编码到 Pipeline。
+- GUI 对接 Project Interface V2。可变长度体力计划使用重复任务、独立选项与拖动排序，参数由 Agent 验证。
 - GitHub 更新需要版本号和完整 Release 资源包；仅推送源码并不会生成更新包。
 - 发布包须包含 Node Agent 所需脚本与运行库；当前启动脚本的运行库更新继续保留。
 - 更新保留 config/、.state/，尤其是每周次数和 15 天周期记录。

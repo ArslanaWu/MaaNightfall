@@ -14,7 +14,7 @@ $gamePackage = 'com.bmystu.peng.gw'
 
 . (Join-Path $PSScriptRoot 'runtime_update.ps1')
 try {
-    Invoke-ProjectRuntimeUpdate -ProjectRoot $projectRoot -Startup
+    if (!(Test-Path -LiteralPath (Join-Path $projectRoot '.gui-release'))) { Invoke-ProjectRuntimeUpdate -ProjectRoot $projectRoot -Startup }
 } catch {
     Write-Host ('[MaaYMZX] Runtime setup failed: ' + $_.Exception.Message) -ForegroundColor Red
     exit 1

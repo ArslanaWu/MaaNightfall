@@ -1,0 +1,13 @@
+{
+  "DownloadSourceIndex": 0,
+  "EnableCheckVersion": true,
+  "EnableAutoUpdateResource": false,
+  "EnableAutoUpdateMFA": false,
+  "NoAutoStart": true,
+  "ContinueRunningWhenError": false,
+  "PresetSettings": {
+    "daily": {
+      "ContinueRunningWhenError": false
+    }
+  }
+}

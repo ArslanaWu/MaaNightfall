@@ -139,11 +139,11 @@ runtimes\node\node.exe tools/task_state.mjs set 你的UID poker 本周已完成�
 
 运行锁阻止并发挑战。强制终止进程可能遗留 `.state/intervals.json.lock`；确认没有其他任务运行后可删除此锁文件，保留 intervals.json 和 weekly.json 的账号记录。
 
-## GUI 选型
+## Windows GUI
 
-选用 [MFAAvalonia](https://github.com/MaaXYZ/MFAAvalonia)，支持 Windows/macOS 及 GitHub 程序和资源更新。当前仍使用命令行菜单；自定义体力计划延后，与 Windows GUI 一起开发，先不适配 macOS。详细依据与集成约定见 [GUI 选型](docs/gui-choice.md)。
+双击 **run_gui.cmd** 启动 [MFAAvalonia](https://github.com/MaaXYZ/MFAAvalonia) 图形界面。默认勾选全部模块；体力计划支持选择录像中的 11 个关卡、指定次数、重复添加和拖动排序。保留原命令行菜单，当前只适配 Windows。使用与打包方式见 [GUI 使用说明](docs/gui.md)。
 
-GUI 的资源更新需要发布匹配的 GitHub Release 包，不能只推送源码。当前运行库仍由启动脚本更新，项目代码仍使用 git pull。
+GUI 启动时检查本项目的 GitHub Release 更新。发行包包含配套运行库，更新保留本地配置和周期记录；源码用户使用 git pull。尚未发布 Release 时，没有可下载的更新包。
 
 ## 开发与验证
 

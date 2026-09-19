@@ -1,3 +1,5 @@
+import {registerGuiActions} from './gui_actions.mjs'
+import {validatePlan} from './stamina_plan.mjs'
 import {ensureMuMu} from './mumu.mjs'
 import {MODULES, MODULE_ORDER, WORK_MODULES, normalizeModules, createExecutionPlan} from './modules.mjs'
 import {registerActions} from './custom_actions.mjs'
@@ -108,6 +110,15 @@ async function main() {
   }
   const executionPlan = createExecutionPlan(selectedModules)
 
+  const planIndex=process.argv.indexOf('--stamina-plan')
+  if(planIndex>=0){
+    if(!process.argv[planIndex+1])throw Error('缺少体力计划文件路径')
+    const plan=JSON.parse(fs.readFileSync(path.resolve(process.argv[planIndex+1]),'utf8'))
+    validatePlan(plan)
+    executionPlan.pipelineOverride.Stamina_OpenFamilyAffairs={recognition:'DirectHit',action:'Custom',custom_action:'StaminaPlan',custom_action_param:{plan},next:'Stamina_ReturnHome'}
+    executionPlan.pipelineOverride.Stamina_ReturnHome={...executionPlan.pipelineOverride.Stamina_ReturnHome,action:'DoNothing'}
+  }
+
   await import(pathToFileURL(findMaaNode()).href)
 
   const logDir = path.join(PROJECT_ROOT, 'debug')
@@ -121,6 +132,7 @@ async function main() {
 
   const resource = new maa.Resource()
   registerActions(resource, PROJECT_ROOT)
+  registerGuiActions(resource)
   const loadJob = resource.post_bundle(RESOURCE_PATH)
   await loadJob.wait()
   if (!loadJob.succeeded) throw new Error(`资源加载失败：${RESOURCE_PATH}`)
