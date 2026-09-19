@@ -1,18 +1,37 @@
-# MaaYMZX
+# MaaNightfall
 
 基于 [MaaFramework](https://github.com/MaaXYZ/MaaFramework) 的《夜幕之下》日常自动化工具，支持按模块勾选执行，以及回车一键运行全部模块。
 
-目前主要适配 **Windows + MuMu 12 + 官服**。首次启动会自动安装运行库和 OCR 模型。
+目前适配 **Windows 10/11 x64 + MuMu 12 + 官服**。提供图形界面，也保留上下键、空格勾选和回车一键执行的命令行菜单。当前未适配 macOS。
+
+## 快速开始
+
+1. 从 [最新 Release](https://github.com/ArslanaWu/MaaNightfall/releases/latest) 下载 `MaaNightfall-v版本号-win-x86_64.zip`，完整解压。日常使用请选择这个完整包，而不是 Source code 源码包。
+2. 在 MuMu 中安装游戏并完成登录，按下方要求设置分辨率。
+3. 双击 **`MaaNightfall.exe`**，在 GUI 中选择对应模拟器设备。
+4. 勾选要执行的模块，确认体力计划后开始执行。默认勾选全部模块。
+
+发行包自带 Node.js、MaaFramework、OCR 和 .NET 运行库，无需手动安装 Node 或 Python。启动器在后台准备环境并打开 GUI，不弹命令行窗口；失败时会显示提示，启动日志保存在 `debug/launcher/`。
+
+请保留完整目录，不要单独移动 EXE；需要桌面入口时可创建快捷方式。GUI 启动时检查本项目的 GitHub Release 更新，升级时保留 `config/` 和 `.state/`，其中保存界面配置、体力计划和账号周期记录。
+
+## 自定义体力计划
+
+在 GUI 中通过“添加任务”重复添加“体力计划”，每条分别选择关卡及“指定次数”或“消耗可用体力”，再拖动调整顺序。支持 11 个 X 难度日常关卡，指定次数为 1–999；默认是古堡回声 X，消耗可用体力。
+
+例如可以依次设置：作战演练 X 打 3 次、金钱时代 X 打 2 次，再用古堡回声 X 消耗剩余体力。建议将“消耗可用体力”放在计划末尾。
+
+体力不足时只执行可负担的次数，不购买体力。未解锁 X 难度或无法确认关卡、次数、消耗时会停止并报错。详细说明与命令行计划格式见 [GUI 使用说明](docs/gui.md)。
 
 ## 环境准备
 
-- Windows 10/11 x64、Git（下载源码 ZIP 时无需 Git）。首次安装需联网。
+- Windows 10/11 x64。下载完整发行包无需 Git；首次获取程序、更新或源码安装需联网。
 - MuMu 12，已安装游戏并完成账号登录。游戏包名为 `com.bmystu.peng.gw`。
 - 模拟器分辨率设为 `900×1600`、DPI `320`，游戏横屏画面为 `1600×900`。识别时由 MaaFramework 缩放为短边 720。
 - MuMu 连接由 MaaFramework 自动发现，不要求安装在默认目录。
 - 简报战斗使用已有队伍和自动战斗设置，请提前配置队伍并开启自动战斗。
 
-### 新电脑首次运行
+### 从源码运行
 
 克隆仓库（或下载并解压源码 ZIP）后，先在 MuMu 中完成游戏账号登录；以后双击 run_daily.cmd 即可自动启动 MuMu。无需预装 Node.js、npm、Python 或开发工具。
 
@@ -30,18 +49,18 @@ update_runtime.cmd
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/update_runtime.ps1
 ```
 
-### 自动更新规则
+### 源码运行库更新规则
 
-- 每次通过 run_daily.cmd 启动都会在线检查 Node.js 22 最新补丁和 MaaFramework 最新稳定版；不会自动安装 alpha、beta、rc。
+- 源码目录每次通过 run_daily.cmd 启动都会在线检查 Node.js 22 最新补丁和 MaaFramework 最新稳定版；不会自动安装 alpha、beta、rc。
 - 更新先在临时目录下载和检查，验证 OCR 资源及 Agent 可加载后再替换；替换后的验证失败会恢复旧版。
 - 下载失败或断网时，启动流程会验证并继续使用本项目已有的可用运行库；首次安装没有可用运行库时会提示失败，联网后重新运行即可。手动更新失败返回非零状态。
 - OCR 使用固定的 ppocr_v6-small 模型，仅在缺失或不完整时补齐。不会每次重新下载模型。
 - 更新仅管理运行库与模型，不修改游戏任务脚本、兑换白名单和 .state/ 中的账号周限记录。更新项目代码仍使用 git pull。
-- 源码和发行包共用 runtimes/node/node.exe、runtimes/maa/node_modules/ 目录。直接运行 Node 脚本会跳过自动安装和更新；通用 UI 的 Agent 使用已安装运行库，首次使用前运行 update_runtime.cmd。
+- 源码和发行包采用相同的 `runtimes/` 目录布局。源码首次使用应通过启动脚本准备环境。完整发行包固定配套运行库，无需先运行 `update_runtime.cmd`；建议通过完整 Release 更新，避免单独更新组件导致版本不匹配。
 
 开发工具依赖仅在修改代码时需要，可执行 runtimes\node\npm.cmd ci 安装。运行日常不需要安装这些开发依赖。
 
-## 使用方式
+## 命令行菜单与模块
 
 在终端运行或双击（确认执行后会自动启动 MuMu）：
 
@@ -63,7 +82,7 @@ run_daily.cmd
 | 1 | 启动游戏、关闭公告和活动弹窗 | `start` |
 | 2 | 每日免费饮品，两杯分别检查 | `drinks` |
 | 3 | 好友赠礼 | `friends` |
-| 4 | 古堡回声扫荡，清理体力 | `stamina` |
+| 4 | 体力计划（默认古堡回声，清理体力） | `stamina` |
 | 5 | 据点产物、生产和订单 | `base` |
 | 6 | 秘密派遣领取与指派 | `dispatch` |
 | 7 | 巡夜简报 | `briefing` |
@@ -139,11 +158,15 @@ runtimes\node\node.exe tools/task_state.mjs set 你的UID poker 本周已完成�
 
 运行锁阻止并发挑战。强制终止进程可能遗留 `.state/intervals.json.lock`；确认没有其他任务运行后可删除此锁文件，保留 intervals.json 和 weekly.json 的账号记录。
 
-## Windows GUI
+## GUI 源码入口与打包
 
-发行包解压后双击 **MaaNightfall.exe** 启动（无命令行窗口）。源码首次使用可运行 `powershell -NoProfile -ExecutionPolicy Bypass -File tools/build_launcher.ps1` 生成 EXE，也保留 `run_gui.cmd` 入口。GUI 使用 [MFAAvalonia](https://github.com/MaaXYZ/MFAAvalonia) 图形界面。默认勾选全部模块；体力计划支持选择录像中的 11 个关卡、指定次数、重复添加和拖动排序。保留原命令行菜单，当前只适配 Windows。使用与打包方式见 [GUI 使用说明](docs/gui.md)。
+GUI 基于 [MFAAvalonia](https://github.com/MaaXYZ/MFAAvalonia)。克隆源码后可以使用 `run_gui.cmd`，首次启动会联网补齐 GUI 与运行库；也可以先执行以下命令生成启动器，再双击 `MaaNightfall.exe`：
 
-GUI 启动时检查本项目的 GitHub Release 更新。发行包包含配套运行库，更新保留本地配置和周期记录；源码用户使用 git pull。尚未发布 Release 时，没有可下载的更新包。
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/build_launcher.ps1
+```
+
+源码更新使用 `git pull`；启动器源码更新后重新编译即可。使用与打包方式见 [GUI 使用说明](docs/gui.md)。
 
 ## 开发与验证
 
@@ -170,7 +193,7 @@ runtimes\node\node.exe tools/test_weekly_exchange.mjs
 
 录像回归的素材准备和命令见 [回归测试说明](docs/testing.md)。原始视频、账号截图、抽帧和日志只保存在本地，不随仓库发布。
 
-现有 `.github/workflows/install.yml` 和 `tools/install.py` 继承自项目模板，尚未完整包含本项目 Node Agent 所需脚本和配置。当前请按上述源码方式运行；发布可下载的发行包前，还需要完善打包流程并验证成品。通用界面入口通过 PowerShell 启动 Agent，同样优先使用包内 Node.js 和 Maa Node 运行库。
+`.github/workflows/install.yml` 负责构建 Windows 完整包：准备运行库、执行 GUI 检查、编译 EXE 启动器并打包。推送 `v*` 标签后自动发布 GitHub Release，也支持手动构建。包内不包含个人配置、账号周期记录、日志或原始录像。
 
 ## 当前限制
 
@@ -184,4 +207,4 @@ runtimes\node\node.exe tools/test_weekly_exchange.mjs
 
 ## 许可证与致谢
 
-代码采用 [MIT License](LICENSE)，保留模板原有版权声明。项目基于 MaaFramework 和 MaaPracticeBoilerplate；游戏画面、名称和素材归各自权利人所有。本项目为非官方工具。
+本项目代码采用 [MIT License](LICENSE)，保留模板原有版权声明。项目基于 MaaFramework 和 MaaPracticeBoilerplate，GUI 使用 MFAAvalonia；发行包中的第三方组件遵循各自许可证，见 [第三方许可证说明](docs/licenses/)。游戏画面、名称和素材归各自权利人所有。本项目为非官方工具。
