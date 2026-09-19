@@ -11,7 +11,9 @@ if(!fs.existsSync(exe)){
  fs.mkdirSync(stage,{recursive:true})
  const zip=path.join(stage,'gui.zip')
  console.log('[GUI] 下载 MFAAvalonia '+version)
- const response=await fetch('https://api.github.com/repos/MaaXYZ/MFAAvalonia/releases/assets/542608775',{headers:{Accept:'application/octet-stream','User-Agent':'MaaNightfall'},signal:AbortSignal.timeout(180000)})
+ const headers={Accept:'application/octet-stream','User-Agent':'MaaNightfall'}
+ if(process.env.GITHUB_TOKEN)headers.Authorization='Bearer '+process.env.GITHUB_TOKEN
+ const response=await fetch('https://api.github.com/repos/MaaXYZ/MFAAvalonia/releases/assets/542608775',{headers,signal:AbortSignal.timeout(180000)})
  if(!response.ok)throw Error('GUI 下载失败：'+response.status)
  const bytes=Buffer.from(await response.arrayBuffer())
  if(crypto.createHash('sha256').update(bytes).digest('hex')!==digest)throw Error('GUI 下载校验失败')
