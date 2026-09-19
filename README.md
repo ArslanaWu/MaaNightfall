@@ -135,6 +135,8 @@ runtimes\node\node.exe tools/task_state.mjs set 你的UID poker 本周已完成�
 
 正常退出后按 UID 保存到 `.state/intervals.json`，满 15×24 小时后再次执行。首次没有记录会执行，打到失败并正常退出也算本轮完成；识别失败、超时不记录完成，下次可重试。周期配置在 `assets/task_policies.json` 的 `intervalTasks` 中，与每周次数独立。
 
+本地周期记录可用可选的 nextEligibleAt（ISO 时间）单独校准下一次执行时间；完成后自动清除该覆盖值，恢复 15 天周期。未到执行时间时，日常流程跳过挑战；不会单独定时启动程序。
+
 运行锁阻止并发挑战。强制终止进程可能遗留 `.state/intervals.json.lock`；确认没有其他任务运行后可删除此锁文件，保留 intervals.json 和 weekly.json 的账号记录。
 
 ## GUI 选型

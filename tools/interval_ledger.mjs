@@ -7,12 +7,14 @@ export class IntervalLedger {
  read(){
   const data=fs.existsSync(this.file)?JSON.parse(fs.readFileSync(this.file,'utf8')):{}
   const object=x=>x&&typeof x==='object'&&!Array.isArray(x)
-  if(!object(data)||Object.values(data).some(account=>!object(account)||Object.values(account).some(record=>!object(record)||typeof record.completedAt!=='string'||!Number.isFinite(Date.parse(record.completedAt)))))throw Error('周期记录损坏，拒绝重置执行时间')
+  if(!object(data)||Object.values(data).some(account=>!object(account)||Object.values(account).some(record=>!object(record)||typeof record.completedAt!=='string'||!Number.isFinite(Date.parse(record.completedAt))||(record.nextEligibleAt!==undefined&&(typeof record.nextEligibleAt!=='string'||!Number.isFinite(Date.parse(record.nextEligibleAt)))))))throw Error('周期记录损坏，拒绝重置执行时间')
   return data
  }
  due(uid,key,days){
   if(!Number.isInteger(days)||days<1)throw Error('周期天数必须是正整数')
-  const last=this.read()[uid]?.[key]?.completedAt
+  const record=this.read()[uid]?.[key]
+  if(record?.nextEligibleAt!==undefined)return this.now()>=Date.parse(record.nextEligibleAt)
+  const last=record?.completedAt
   if(!last)return true
   const timestamp=Date.parse(last)
   if(!Number.isFinite(timestamp))throw Error('周期记录损坏，无法判断上次执行时间')

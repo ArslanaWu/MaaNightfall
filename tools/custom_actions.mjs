@@ -101,7 +101,7 @@ export function registerActions(target, root) {
     const identity=text(await io.ocr(await io.shot(),[0,670,240,50],'UID.*')).match(/UID\s*[:：]?\s*(\d+)/i)?.[1]
     if(!identity)throw Error('无法识别 UID，停止周期挑战')
     const result=await intervals.run(identity,'silentDoor',policies.intervalTasks.silentDoor.days,()=>runChallenge(io))
-    console.log(result.skipped?'[缄默暗门] 距上次完成未满 15 天，跳过':'[缄默暗门] 已记录完成，15 天后再执行')
+    console.log(result.skipped?'[缄默暗门] 未到下次执行时间，跳过':'[缄默暗门] 已记录完成，15 天后再执行')
     return true
   })
   let uid

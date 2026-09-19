@@ -58,12 +58,22 @@ try{
  now++;assert.equal(ledger.due('a','silentDoor',15),true)
  await assert.rejects(ledger.run('a','silentDoor',15,async()=>{throw Error('interrupted')}),/interrupted/)
  assert.equal(ledger.due('a','silentDoor',15),true)
+ const override=ledger.read();override.a.silentDoor.nextEligibleAt=new Date(now+6*DAY_MS).toISOString()
+ fs.writeFileSync(file,JSON.stringify(override))
+ now+=6*DAY_MS-1;assert.equal(ledger.due('a','silentDoor',15),false)
+ now++;assert.equal(ledger.due('a','silentDoor',15),true)
+ await assert.rejects(ledger.run('a','silentDoor',15,async()=>{throw Error('interrupted')}),/interrupted/)
+ assert.ok(ledger.read().a.silentDoor.nextEligibleAt)
+ await ledger.run('a','silentDoor',15,async()=>true)
+ assert.equal(ledger.read().a.silentDoor.nextEligibleAt,undefined)
+ assert.equal(ledger.due('a','silentDoor',15),false)
+ now+=15*DAY_MS;assert.equal(ledger.due('a','silentDoor',15),true)
  fs.writeFileSync(file+'.lock','')
  await assert.rejects(ledger.run('a','silentDoor',15,async()=>true),/执行锁/)
  fs.unlinkSync(file+'.lock')
  assert.equal(fs.existsSync(file+'.lock'),false)
  assert.throws(()=>ledger.due('a','silentDoor',0),/正整数/)
- for(const corrupt of [[],{a:{silentDoor:{}}},{a:{silentDoor:{completedAt:'invalid'}}}]){
+ for(const corrupt of [[],{a:{silentDoor:{}}},{a:{silentDoor:{completedAt:'invalid'}}},{a:{silentDoor:{completedAt:new Date(now).toISOString(),nextEligibleAt:'invalid'}}}]){
   fs.writeFileSync(file,JSON.stringify(corrupt));assert.throws(()=>ledger.due('a','silentDoor',15),/损坏/)
  }
 }finally{
