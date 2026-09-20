@@ -7,6 +7,8 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+$dailySummaryStarted = Get-Date
+if (!$Check -and !$Probe) { Write-Host ('[DailySummary] Nightfall start=' + $dailySummaryStarted.ToString('o')) }
 $projectRoot = Split-Path -Parent $PSScriptRoot
 . (Join-Path $PSScriptRoot 'local_mumu.ps1')
 $adbExe = 'C:\Program Files\Netease\MuMu\nx_main\adb.exe'
@@ -49,4 +51,6 @@ if ($runResult -ne 0 -and -not $Check -and -not $Probe -and (Test-Path -LiteralP
     }
 }
 
+if (!$Check -and !$Probe) { Write-Host ('[DailySummary] Nightfall end=' + (Get-Date).ToString('o') + ' elapsedSeconds=' + [math]::Round(((Get-Date)-$dailySummaryStarted).TotalSeconds) + ' exit=' + $runResult) }
 exit $runResult
+

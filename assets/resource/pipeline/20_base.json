@@ -56,7 +56,7 @@
             "Base_FirstSubmit",
             "Base_FirstRefresh"
         ],
-        "on_error": "Base_OrderProcess"
+        "on_error": "Base_LeaveOrders"
     },
     "Base_FirstSubmit": {
         "recognition": "OCR",
@@ -95,7 +95,7 @@
             "Base_SecondSubmit",
             "Base_SecondRefresh"
         ],
-        "on_error": "Base_SecondOrderProcess"
+        "on_error": "Base_LeaveOrders"
     },
     "Base_SecondSubmit": {
         "recognition": "OCR",
