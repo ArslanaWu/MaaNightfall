@@ -43,6 +43,10 @@ jobs:
           node tools/test_stamina_plan.mjs
           node tools/test_modules.mjs
           node tools/test_challenge.mjs
+          node tools/test_weekly_exchange.mjs
+          node tools/test_dispatch_refresh.mjs
+          node tools/test_module_runner.mjs
+          node tools/test_silent_door_period.mjs
 
       - name: Install maafw
         run: |

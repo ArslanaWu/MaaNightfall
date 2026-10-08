@@ -1,6 +1,6 @@
 import {MODULES,createExecutionPlan} from './modules.mjs'
 import {createIO} from './custom_actions.mjs'
-import {runStaminaPlan} from './stamina_plan.mjs'
+import {runStaminaPlan,DEFAULT_PLAN} from './stamina_plan.mjs'
 export function moduleSucceeded(result,detail,status){
  if(!result||result.status!==status)return false
  const nodes=result.nodes.map(detail)
@@ -17,6 +17,7 @@ export function registerGuiActions(target){
   const input=param??{}
   if(input.plan)return runStaminaPlan(createIO(context),input.plan)
   const stage=input.stage??context.get_node_data_parsed('Gui_StaminaStage')?.attach?.stage
+  if(stage==='daily'||!stage)return runStaminaPlan(createIO(context),DEFAULT_PLAN)
   const mode=input.mode??context.get_node_data_parsed('Gui_StaminaMode')?.attach?.mode
   const count=mode==='all'?'all':Number(input.count??context.get_node_data_parsed('Gui_StaminaCount')?.attach?.count)
   return runStaminaPlan(createIO(context),[{stage,count}])

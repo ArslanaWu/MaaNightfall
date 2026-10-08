@@ -1,512 +1,784 @@
 {
-    "Briefing_OpenBusiness": {
-        "recognition": "OCR",
-        "expected": "业务",
-        "roi": [1020, 570, 150, 130],
-        "action": "Click",
-        "target": [1090, 645],
-        "post_delay": 800,
-        "max_hit": 3,
-        "next": [
-            "Briefing_OpenMenu",
-            "Briefing_OpenBusiness"
-        ],
-        "pre_delay": 600
-    },
-    "Briefing_OpenMenu": {
-        "recognition": "OCR",
-        "expected": "巡夜简报",
-        "roi": [850, 300, 430, 300],
-        "action": "Click",
-        "post_delay": 1000,
-        "next": [
-            "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_ListReady"
-        ]
-    },
-    "Briefing_ListReady": {
-        "recognition": "OCR",
-        "expected": "今日已处理",
-        "roi": [20, 80, 420, 100],
-        "next": [
-            "Briefing_SelectRow1",
-            "Briefing_SelectRow2",
-            "Briefing_SelectRow3",
-            "Briefing_SelectRow4",
-            "Briefing_SelectRow5",
-            "Briefing_Leave"
-        ]
-    },
-    "Briefing_SelectRow1": {
-        "action": "Click",
-        "target": [230, 180],
-        "max_hit": 1,
-        "post_delay": 500,
-        "next": [
-            "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_HandleSelected"
-        ]
-    },
-    "Briefing_SelectRow2": {
-        "action": "Click",
-        "target": [230, 264],
-        "max_hit": 1,
-        "post_delay": 500,
-        "next": [
-            "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_HandleSelected"
-        ]
-    },
-    "Briefing_SelectRow3": {
-        "action": "Click",
-        "target": [230, 344],
-        "max_hit": 1,
-        "post_delay": 500,
-        "next": [
-            "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_HandleSelected"
-        ]
-    },
-    "Briefing_SelectRow4": {
-        "action": "Click",
-        "target": [230, 424],
-        "max_hit": 1,
-        "post_delay": 500,
-        "next": [
-            "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_HandleSelected"
-        ]
-    },
-    "Briefing_SelectRow5": {
-        "action": "Click",
-        "target": [230, 504],
-        "max_hit": 1,
-        "post_delay": 500,
-        "next": [
-            "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_HandleSelected"
-        ]
-    },
-    "Briefing_HandleSelected": {
-        "timeout": 12000,
-        "next": [
-            "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_CloseRewardAfterNext",
-            "Briefing_AlreadySettled",
-            "Briefing_MeetingSelected",
-            "Briefing_ImmediateTravel",
-            "Briefing_GoBattle",
-            "Briefing_ChoiceInList"
-        ]
-    },
-    "Briefing_CloseLevelUp": {
-        "recognition": "And",
-        "all_of": [
-            {
-                "recognition": {
-                    "type": "OCR",
-                    "param": {
-                        "expected": "提升|升级",
-                        "roi": [150, 410, 350, 130]
-                    }
-                }
-            },
-            {
-                "recognition": {
-                    "type": "OCR",
-                    "param": {
-                        "expected": "点击.*空白.*关闭",
-                        "roi": [430, 625, 430, 90]
-                    }
-                }
-            }
-        ],
-        "action": "Click",
-        "target": [640, 680],
-        "post_delay": 800,
-        "max_hit": 10,
-        "next": []
-    },
-    "Briefing_CloseRewardAfterNext": {
-        "recognition": "OCR",
-        "expected": "获得物品",
-        "roi": [420, 80, 440, 160],
-        "action": "Click",
-        "target": [640, 650],
-        "post_delay": 800,
-        "max_hit": 10,
-        "next": [
-            "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_HandleSelected"
-        ]
-    },
-    "Briefing_ChoiceInList": {
-        "recognition": "TemplateMatch",
-        "template": "briefing/choice_center.png",
-        "green_mask": true,
-        "roi": [600, 350, 650, 330],
-        "action": "Click",
-        "post_delay": 900,
-        "next": [
-            "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_CloseRewardAfterChoice",
-            "Briefing_ListReady"
-        ]
-    },
-    "Briefing_CloseRewardAfterChoice": {
-        "recognition": "OCR",
-        "expected": "获得物品",
-        "roi": [420, 80, 440, 160],
-        "action": "Click",
-        "target": [640, 650],
-        "post_delay": 800,
-        "max_hit": 10,
-        "next": [
-            "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_ListReady"
-        ]
-    },
-    "Briefing_ImmediateTravel": {
-        "recognition": "OCR",
-        "expected": "立即前往",
-        "action": "Click",
-        "post_delay": 1500,
-        "timeout": 60000,
-        "next": [
-            "Briefing_BattleStart",
-            "Briefing_CloseTravelReward",
-            "Briefing_DonateOnMap",
-            "Briefing_ChoiceOnMap",
-            "Briefing_GoBattle"
-        ]
-    },
-    "Briefing_CloseTravelReward": {
-        "recognition": "OCR",
-        "expected": "获得物品",
-        "roi": [420, 80, 440, 160],
-        "action": "Click",
-        "target": [640, 680],
-        "post_delay": 1000,
-        "max_hit": 3,
-        "next": [
-            "Briefing_BattleStart",
-            "Briefing_CloseTravelReward",
-            "Briefing_DonateOnMap",
-            "Briefing_ChoiceOnMap",
-            "Briefing_GoBattle"
-        ]
-    },
-    "Briefing_DonateOnMap": {
-        "recognition": "OCR",
-        "expected": "赠予",
-        "roi": [900, 540, 300, 130],
-        "action": "Click",
-        "post_delay": 1000,
-        "timeout": 60000,
-        "next": "Briefing_EventEnded"
-    },
-    "Briefing_ChoiceOnMap": {
-        "recognition": "TemplateMatch",
-        "template": [
-            "briefing/choice_side.png",
-            "briefing/choice_side_new.png"
-        ],
-        "green_mask": true,
-        "roi": [760, 350, 500, 330],
-        "action": "Click",
-        "post_delay": 1000,
-        "timeout": 60000,
-        "next": "Briefing_EventEnded"
-    },
-    "Briefing_EventEnded": {
-        "recognition": "OCR",
-        "expected": [
-            "事件结束",
-            "事件结算"
-        ],
-        "action": "Click",
-        "target": [640, 680],
-        "post_delay": 1000,
-        "next": [
-            "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_CloseEventReward",
-            "Briefing_BaseReadyToReturn",
-            "Briefing_ListReady"
-        ]
-    },
-    "Briefing_BaseReadyToReturn": {
-        "recognition": "OCR",
-        "expected": [
-            "仓库",
-            "建造"
-        ],
-        "roi": [1010, 580, 250, 100],
-        "action": "Click",
-        "target": [45, 40],
-        "post_delay": 1200,
-        "timeout": 15000,
-        "next": [
-            "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_ListReady"
-        ]
-    },
-    "Briefing_AlreadySettled": {
-        "recognition": "OCR",
-        "expected": [
-            "事件结束",
-            "事件结算"
-        ],
-        "next": [
-            "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_ListReady"
-        ]
-    },
-    "Briefing_Leave": {
-        "action": "Click",
-        "target": [45, 40],
-        "post_delay": 800,
-        "next": "Briefing_ReturnHome"
-    },
-    "Briefing_ReturnHome": {
-        "recognition": "OCR",
-        "expected": "巡夜简报",
-        "roi": [850, 300, 430, 300],
-        "action": "Click",
-        "target": [156, 40],
-        "post_delay": 1200,
-        "next": "Impression_OpenBusiness",
-        "pre_delay": 1200
-    },
-    "Briefing_MeetingSelected": {
-        "recognition": "OCR",
-        "expected": "会面",
-        "roi": [650, 60, 500, 100],
-        "next": "Briefing_MeetingTravel"
-    },
-    "Briefing_MeetingTravel": {
-        "recognition": "OCR",
-        "expected": "立即前往",
-        "roi": [650, 450, 500, 180],
-        "action": "Click",
-        "post_delay": 1000,
-        "next": "Briefing_MeetingTapCharacter",
-        "timeout": 60000
-    },
-    "Briefing_MeetingTapCharacter": {
-        "recognition": "And",
-        "all_of": [
-            {
-                "recognition": {
-                    "type": "OCR",
-                    "param": {
-                        "expected": "档案",
-                        "roi": [980, 90, 180, 100],
-                        "threshold": 0.8
-                    }
-                }
-            },
-            {
-                "recognition": {
-                    "type": "OCR",
-                    "param": {
-                        "expected": "语音",
-                        "roi": [1150, 130, 120, 100],
-                        "threshold": 0.8
-                    }
-                }
-            }
-        ],
-        "action": "Click",
-        "target": [620, 350],
-        "post_delay": 1500,
-        "timeout": 30000,
-        "next": [
-            "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_MeetingAfterTap"
-        ]
-    },
-    "Briefing_MeetingAfterTap": {
-        "timeout": 4000,
-        "next": [
-            "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_MeetingCloseReward",
-            "Briefing_MeetingReturn"
-        ],
-        "on_error": "Briefing_MeetingDismissReveal"
-    },
-    "Briefing_MeetingCloseReward": {
-        "recognition": "OCR",
-        "expected": "获得物品",
-        "roi": [400, 70, 480, 180],
-        "action": "Click",
-        "post_delay": 1100,
-        "next": [
-            "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_MeetingAfterTap"
-        ],
-        "target": [640, 660],
-        "max_hit": 6
-    },
-    "Briefing_MeetingDismissReveal": {
-        "action": "Click",
-        "target": [640, 670],
-        "max_hit": 5,
-        "post_delay": 1200,
-        "next": [
-            "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_MeetingAfterTap"
-        ]
-    },
-    "Briefing_MeetingReturn": {
-        "recognition": "And",
-        "all_of": [
-            {
-                "recognition": {
-                    "type": "OCR",
-                    "param": {
-                        "expected": "档案",
-                        "roi": [980, 90, 180, 100],
-                        "threshold": 0.8
-                    }
-                }
-            },
-            {
-                "recognition": {
-                    "type": "OCR",
-                    "param": {
-                        "expected": "语音",
-                        "roi": [1150, 130, 120, 100],
-                        "threshold": 0.8
-                    }
-                }
-            }
-        ],
-        "action": "Click",
-        "target": [45, 40],
-        "post_delay": 1000,
-        "next": [
-            "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_CloseRewardAfterChoice",
-            "Briefing_ListReady"
-        ]
-    },
-    "Briefing_GoBattle": {
-        "recognition": "OCR",
-        "expected": [
-            "前往战斗",
-            "去战斗"
-        ],
-        "roi": [650, 350, 600, 330],
-        "action": "Click",
-        "post_delay": 1000,
-        "next": "Briefing_BattleStart"
-    },
-    "Briefing_BattleStart": {
-        "recognition": "And",
-        "all_of": [
-            {
-                "recognition": {
-                    "type": "OCR",
-                    "param": {
-                        "expected": "开始行动",
-                        "roi": [1060, 610, 170, 70],
-                        "threshold": 0.8
-                    }
-                }
-            },
-            {
-                "recognition": {
-                    "type": "OCR",
-                    "param": {
-                        "expected": "^0$",
-                        "roi": [1005, 625, 65, 30],
-                        "only_rec": true,
-                        "threshold": 0.8
-                    }
-                }
-            }
-        ],
-        "box_index": 0,
-        "action": "Click",
-        "post_delay": 1500,
-        "timeout": 180000,
-        "next": [
-            "Briefing_BattleFailed",
-            "Briefing_BattleWon"
-        ]
-    },
-    "Briefing_BattleFailed": {
-        "recognition": "OCR",
-        "expected": [
-            "行动失败",
-            "战斗失败"
-        ],
-        "roi": [0, 200, 1280, 460],
-        "next": "FatalExit"
-    },
-    "Briefing_BattleWon": {
-        "recognition": "OCR",
-        "expected": "成功",
-        "roi": [
-            65,
-            365,
-            330,
-            80
-        ],
-        "action": "Click",
-        "post_delay": 1500,
-        "next": "Briefing_BattleReturn",
-        "target": [
-            640,
-            680
-        ],
-        "only_rec": true,
-        "threshold": 0.65,
-        "max_hit": 20
-    },
-    "Briefing_BattleReturn": {
-        "timeout": 60000,
-        "next": [
-            "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_BattleWon",
-            "Briefing_BattleCloseReward",
-            "Briefing_ListReady"
-        ]
-    },
-    "Briefing_BattleCloseReward": {
-        "recognition": "OCR",
-        "expected": "获得物品",
-        "roi": [400, 70, 480, 180],
-        "action": "Click",
-        "post_delay": 1100,
-        "next": [
-            "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_ListReady"
-        ],
-        "target": [640, 660],
-        "max_hit": 6
-    },
-    "Briefing_CloseEventReward": {
-        "recognition": "OCR",
-        "expected": "获得物品",
-        "roi": [
-            420,
-            80,
-            440,
-            160
-        ],
-        "action": "Click",
-        "target": [
-            640,
-            680
-        ],
-        "post_delay": 1000,
-        "max_hit": 8,
-        "next": [
-            "[JumpBack]Briefing_CloseLevelUp",
-            "Briefing_CloseEventReward",
-            "Briefing_BaseReadyToReturn",
-            "Briefing_ListReady"
-        ]
-    }
+  "Briefing_OpenBusiness": {
+    "recognition": "OCR",
+    "expected": "业务",
+    "roi": [
+      1020,
+      570,
+      150,
+      130
+    ],
+    "action": "Click",
+    "target": [
+      1090,
+      645
+    ],
+    "post_delay": 800,
+    "max_hit": 3,
+    "next": [
+      "Briefing_OpenMenu",
+      "Briefing_OpenBusiness"
+    ],
+    "pre_delay": 600
+  },
+  "Briefing_OpenMenu": {
+    "recognition": "OCR",
+    "expected": "巡夜简报",
+    "roi": [
+      850,
+      300,
+      430,
+      300
+    ],
+    "action": "Click",
+    "post_delay": 1000,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_ListReady"
+    ]
+  },
+  "Briefing_ListReady": {
+    "recognition": "OCR",
+    "expected": "今日已处理",
+    "roi": [
+      20,
+      80,
+      420,
+      100
+    ],
+    "next": [
+      "Briefing_SelectRow1",
+      "Briefing_SelectRow2",
+      "Briefing_SelectRow3",
+      "Briefing_SelectRow4",
+      "Briefing_SelectRow5",
+      "Briefing_CloseRewardBeforeLeave",
+      "Briefing_Leave"
+    ]
+  },
+  "Briefing_SelectRow1": {
+    "action": "Click",
+    "target": [
+      230,
+      180
+    ],
+    "max_hit": 1,
+    "post_delay": 500,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_HandleSelected"
+    ]
+  },
+  "Briefing_SelectRow2": {
+    "action": "Click",
+    "target": [
+      230,
+      264
+    ],
+    "max_hit": 1,
+    "post_delay": 500,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_HandleSelected"
+    ]
+  },
+  "Briefing_SelectRow3": {
+    "action": "Click",
+    "target": [
+      230,
+      344
+    ],
+    "max_hit": 1,
+    "post_delay": 500,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_HandleSelected"
+    ]
+  },
+  "Briefing_SelectRow4": {
+    "action": "Click",
+    "target": [
+      230,
+      424
+    ],
+    "max_hit": 1,
+    "post_delay": 500,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_HandleSelected"
+    ]
+  },
+  "Briefing_SelectRow5": {
+    "action": "Click",
+    "target": [
+      230,
+      504
+    ],
+    "max_hit": 1,
+    "post_delay": 500,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_HandleSelected"
+    ]
+  },
+  "Briefing_HandleSelected": {
+    "timeout": 12000,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_CloseRewardAfterNext",
+      "Briefing_AlreadySettled",
+      "Briefing_MeetingSelected",
+      "Briefing_ImmediateTravel",
+      "Briefing_GoBattle",
+      "Briefing_ChoiceInList"
+    ]
+  },
+  "Briefing_CloseLevelUp": {
+    "recognition": "And",
+    "all_of": [
+      {
+        "recognition": {
+          "type": "OCR",
+          "param": {
+            "expected": "提升|升级",
+            "roi": [
+              150,
+              410,
+              350,
+              130
+            ]
+          }
+        }
+      },
+      {
+        "recognition": {
+          "type": "OCR",
+          "param": {
+            "expected": "点击.*空白.*关闭",
+            "roi": [
+              430,
+              625,
+              430,
+              90
+            ]
+          }
+        }
+      }
+    ],
+    "action": "Click",
+    "target": [
+      640,
+      680
+    ],
+    "post_delay": 800,
+    "max_hit": 10,
+    "next": []
+  },
+  "Briefing_CloseRewardAfterNext": {
+    "recognition": "OCR",
+    "expected": "获得物品",
+    "roi": [
+      420,
+      80,
+      440,
+      160
+    ],
+    "action": "Click",
+    "target": [
+      640,
+      650
+    ],
+    "post_delay": 800,
+    "max_hit": 10,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_HandleSelected"
+    ]
+  },
+  "Briefing_ChoiceInList": {
+    "recognition": "TemplateMatch",
+    "template": "briefing/choice_center.png",
+    "green_mask": true,
+    "roi": [
+      600,
+      350,
+      650,
+      330
+    ],
+    "action": "Click",
+    "post_delay": 900,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_CloseRewardAfterChoice",
+      "Briefing_ListReady"
+    ]
+  },
+  "Briefing_CloseRewardAfterChoice": {
+    "recognition": "OCR",
+    "expected": "获得物品",
+    "roi": [
+      420,
+      80,
+      440,
+      160
+    ],
+    "action": "Click",
+    "target": [
+      640,
+      650
+    ],
+    "post_delay": 800,
+    "max_hit": 10,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_ListReady"
+    ]
+  },
+  "Briefing_ImmediateTravel": {
+    "recognition": "OCR",
+    "expected": "立即前往",
+    "action": "Click",
+    "post_delay": 1500,
+    "timeout": 60000,
+    "next": [
+      "Briefing_BattleStart",
+      "Briefing_CloseTravelReward",
+      "Briefing_DonateOnMap",
+      "Briefing_ChoiceOnMap",
+      "Briefing_GoBattle"
+    ]
+  },
+  "Briefing_CloseTravelReward": {
+    "recognition": "OCR",
+    "expected": "获得物品",
+    "roi": [
+      420,
+      80,
+      440,
+      160
+    ],
+    "action": "Click",
+    "target": [
+      640,
+      680
+    ],
+    "post_delay": 1000,
+    "max_hit": 3,
+    "next": [
+      "Briefing_EventEnded",
+      "Briefing_BattleStart",
+      "Briefing_CloseTravelReward",
+      "Briefing_DonateOnMap",
+      "Briefing_ChoiceOnMap",
+      "Briefing_MapReadyToReturn",
+      "Briefing_GoBattle"
+    ]
+  },
+  "Briefing_DonateOnMap": {
+    "recognition": "OCR",
+    "expected": "赠予",
+    "roi": [
+      900,
+      540,
+      300,
+      130
+    ],
+    "action": "Click",
+    "post_delay": 1000,
+    "timeout": 60000,
+    "next": "Briefing_EventEnded"
+  },
+  "Briefing_ChoiceOnMap": {
+    "recognition": "TemplateMatch",
+    "template": [
+      "briefing/choice_side.png",
+      "briefing/choice_side_new.png"
+    ],
+    "green_mask": true,
+    "roi": [
+      760,
+      350,
+      500,
+      330
+    ],
+    "action": "Click",
+    "post_delay": 1000,
+    "timeout": 60000,
+    "next": [
+      "Briefing_EventEnded",
+      "Briefing_MapReadyToReturn",
+      "Briefing_ChoiceOnMap"
+    ],
+    "target": true,
+    "max_hit": 8,
+    "target_offset": [
+      40,
+      10,
+      -80,
+      -20
+    ]
+  },
+  "Briefing_EventEnded": {
+    "recognition": "OCR",
+    "expected": [
+      "事件结束",
+      "事件结算"
+    ],
+    "action": "Click",
+    "target": [
+      640,
+      680
+    ],
+    "post_delay": 1000,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_CloseEventReward",
+      "Briefing_EventEnded",
+      "Briefing_MapReadyToReturn",
+      "Briefing_BaseReadyToReturn",
+      "Briefing_ListReady"
+    ],
+    "max_hit": 4
+  },
+  "Briefing_BaseReadyToReturn": {
+    "recognition": "OCR",
+    "expected": [
+      "仓库",
+      "建造"
+    ],
+    "roi": [
+      1010,
+      580,
+      250,
+      100
+    ],
+    "action": "Click",
+    "target": [
+      45,
+      40
+    ],
+    "post_delay": 1200,
+    "timeout": 15000,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_ListReady"
+    ]
+  },
+  "Briefing_AlreadySettled": {
+    "recognition": "OCR",
+    "expected": [
+      "事件结束",
+      "事件结算"
+    ],
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_ListReady"
+    ]
+  },
+  "Briefing_Leave": {
+    "action": "Click",
+    "target": [
+      45,
+      40
+    ],
+    "post_delay": 800,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_CloseRewardBeforeLeave",
+      "Briefing_ReturnHome"
+    ]
+  },
+  "Briefing_ReturnHome": {
+    "recognition": "OCR",
+    "expected": "巡夜简报",
+    "roi": [
+      850,
+      300,
+      430,
+      300
+    ],
+    "action": "Click",
+    "target": [
+      156,
+      40
+    ],
+    "post_delay": 1200,
+    "next": "Impression_OpenBusiness",
+    "pre_delay": 1200
+  },
+  "Briefing_MeetingSelected": {
+    "recognition": "OCR",
+    "expected": "会面",
+    "roi": [
+      650,
+      60,
+      500,
+      100
+    ],
+    "next": "Briefing_MeetingTravel"
+  },
+  "Briefing_MeetingTravel": {
+    "recognition": "OCR",
+    "expected": "立即前往",
+    "roi": [
+      650,
+      450,
+      500,
+      180
+    ],
+    "action": "Click",
+    "post_delay": 1000,
+    "next": "Briefing_MeetingTapCharacter",
+    "timeout": 60000
+  },
+  "Briefing_MeetingTapCharacter": {
+    "recognition": "And",
+    "all_of": [
+      {
+        "recognition": {
+          "type": "OCR",
+          "param": {
+            "expected": "档案",
+            "roi": [
+              980,
+              90,
+              180,
+              100
+            ],
+            "threshold": 0.8
+          }
+        }
+      },
+      {
+        "recognition": {
+          "type": "OCR",
+          "param": {
+            "expected": "语音",
+            "roi": [
+              1150,
+              130,
+              120,
+              100
+            ],
+            "threshold": 0.8
+          }
+        }
+      }
+    ],
+    "action": "Click",
+    "target": [
+      620,
+      350
+    ],
+    "post_delay": 1500,
+    "timeout": 30000,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_MeetingAfterTap"
+    ]
+  },
+  "Briefing_MeetingAfterTap": {
+    "timeout": 4000,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_MeetingCloseReward",
+      "Briefing_MeetingReturn"
+    ],
+    "on_error": "Briefing_MeetingDismissReveal"
+  },
+  "Briefing_MeetingCloseReward": {
+    "recognition": "OCR",
+    "expected": "获得物品",
+    "roi": [
+      400,
+      70,
+      480,
+      180
+    ],
+    "action": "Click",
+    "post_delay": 1100,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_MeetingAfterTap"
+    ],
+    "target": [
+      640,
+      660
+    ],
+    "max_hit": 6
+  },
+  "Briefing_MeetingDismissReveal": {
+    "action": "Click",
+    "target": [
+      640,
+      670
+    ],
+    "max_hit": 5,
+    "post_delay": 1200,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_MeetingAfterTap"
+    ]
+  },
+  "Briefing_MeetingReturn": {
+    "recognition": "And",
+    "all_of": [
+      {
+        "recognition": {
+          "type": "OCR",
+          "param": {
+            "expected": "档案",
+            "roi": [
+              980,
+              90,
+              180,
+              100
+            ],
+            "threshold": 0.8
+          }
+        }
+      },
+      {
+        "recognition": {
+          "type": "OCR",
+          "param": {
+            "expected": "语音",
+            "roi": [
+              1150,
+              130,
+              120,
+              100
+            ],
+            "threshold": 0.8
+          }
+        }
+      }
+    ],
+    "action": "Click",
+    "target": [
+      45,
+      40
+    ],
+    "post_delay": 1000,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_CloseRewardAfterChoice",
+      "Briefing_ListReady"
+    ]
+  },
+  "Briefing_GoBattle": {
+    "recognition": "OCR",
+    "expected": [
+      "前往战斗",
+      "去战斗"
+    ],
+    "roi": [
+      650,
+      350,
+      600,
+      330
+    ],
+    "action": "Click",
+    "post_delay": 1000,
+    "next": "Briefing_BattleStart"
+  },
+  "Briefing_BattleStart": {
+    "recognition": "And",
+    "all_of": [
+      {
+        "recognition": {
+          "type": "OCR",
+          "param": {
+            "expected": "开始行动",
+            "roi": [
+              1060,
+              610,
+              170,
+              70
+            ],
+            "threshold": 0.8
+          }
+        }
+      },
+      {
+        "recognition": {
+          "type": "OCR",
+          "param": {
+            "expected": "^0$",
+            "roi": [
+              1005,
+              625,
+              65,
+              30
+            ],
+            "only_rec": true,
+            "threshold": 0.8
+          }
+        }
+      }
+    ],
+    "box_index": 0,
+    "action": "Click",
+    "post_delay": 1500,
+    "timeout": 180000,
+    "next": [
+      "Briefing_BattleFailed",
+      "Briefing_BattleWon"
+    ]
+  },
+  "Briefing_BattleFailed": {
+    "recognition": "OCR",
+    "expected": [
+      "行动失败",
+      "战斗失败"
+    ],
+    "roi": [
+      0,
+      200,
+      1280,
+      460
+    ],
+    "next": "FatalExit"
+  },
+  "Briefing_BattleWon": {
+    "recognition": "OCR",
+    "expected": "成功",
+    "roi": [
+      65,
+      365,
+      330,
+      80
+    ],
+    "action": "Click",
+    "post_delay": 1500,
+    "next": "Briefing_BattleReturn",
+    "target": [
+      640,
+      680
+    ],
+    "only_rec": true,
+    "threshold": 0.65,
+    "max_hit": 20
+  },
+  "Briefing_BattleReturn": {
+    "timeout": 60000,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_BattleWon",
+      "Briefing_BattleCloseReward",
+      "Briefing_ListReady"
+    ]
+  },
+  "Briefing_BattleCloseReward": {
+    "recognition": "OCR",
+    "expected": "获得物品",
+    "roi": [
+      400,
+      70,
+      480,
+      180
+    ],
+    "action": "Click",
+    "post_delay": 1100,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_ListReady"
+    ],
+    "target": [
+      640,
+      660
+    ],
+    "max_hit": 6
+  },
+  "Briefing_CloseEventReward": {
+    "recognition": "OCR",
+    "expected": "获得物品",
+    "roi": [
+      420,
+      80,
+      440,
+      160
+    ],
+    "action": "Click",
+    "target": [
+      640,
+      680
+    ],
+    "post_delay": 1000,
+    "max_hit": 8,
+    "next": [
+      "Briefing_EventEnded",
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_CloseEventReward",
+      "Briefing_MapReadyToReturn",
+      "Briefing_BaseReadyToReturn",
+      "Briefing_ListReady"
+    ]
+  },
+  "Briefing_MapReadyToReturn": {
+    "recognition": "And",
+    "all_of": [
+      {
+        "recognition": {
+          "type": "OCR",
+          "param": {
+            "expected": "据点资金",
+            "roi": [
+              880,
+              0,
+              260,
+              70
+            ]
+          }
+        }
+      },
+      {
+        "recognition": {
+          "type": "OCR",
+          "param": {
+            "expected": "^任务$",
+            "roi": [
+              0,
+              600,
+              170,
+              100
+            ]
+          }
+        }
+      }
+    ],
+    "action": "Click",
+    "target": [
+      45,
+      40
+    ],
+    "post_delay": 1200,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_ListReady"
+    ]
+  },
+  "Briefing_CloseRewardBeforeLeave": {
+    "recognition": "OCR",
+    "expected": "获得物品",
+    "roi": [
+      420,
+      80,
+      440,
+      160
+    ],
+    "action": "Click",
+    "target": [
+      640,
+      680
+    ],
+    "post_delay": 900,
+    "max_hit": 5,
+    "next": [
+      "[JumpBack]Briefing_CloseLevelUp",
+      "Briefing_CloseRewardBeforeLeave",
+      "Briefing_ListReady",
+      "Briefing_ReturnHome"
+    ]
+  }
 }

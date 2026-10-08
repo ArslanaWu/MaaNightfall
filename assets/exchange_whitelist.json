@@ -1,6 +1,11 @@
 {
     "special": [
         {
+            "name": "契约之刃",
+            "price": 1000,
+            "weeklyLimit": 2
+        },
+        {
             "name": "先锋晋升许可Ⅱ",
             "price": 15,
             "weeklyLimit": 30
@@ -62,6 +67,11 @@
         }
     ],
     "family": [
+        {
+            "name": "契约之刃",
+            "price": 500,
+            "weeklyLimit": 1
+        },
         {
             "name": "欲望特调Ⅱ",
             "price": 15,

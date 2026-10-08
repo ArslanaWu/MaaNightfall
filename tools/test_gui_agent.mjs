@@ -12,6 +12,6 @@ child.stderr.on('data',b=>{errors+=b})
 try{
  await client.connect()
  assert.equal(client.connected,true,errors)
- for(const action of ['GuiModule','StaminaPlan','SilentDoor','ExchangeWhitelist'])assert.ok(client.custom_action_list?.includes(action),action)
+ for(const action of ['GuiModule','StaminaPlan','SilentDoor','ExchangeWhitelist','DispatchRefreshAndAssign'])assert.ok(client.custom_action_list?.includes(action),action)
  console.log('PASS GUI Agent IPC and registered module/stamina/interval/exchange actions')
 }finally{client.disconnect();child.kill();resource.destroy()}

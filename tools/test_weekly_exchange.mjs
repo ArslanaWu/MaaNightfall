@@ -23,6 +23,17 @@ const item={name:'爱欲灵感Ⅱ',price:30,weeklyLimit:10}
 const good={title:'爱欲灵感II',weekly:[10,10],quantity:[2,10],total:60,balance:75}
 assert.ok(validateExchange(item,good))
 for(const change of [{title:'作战报告'},{total:61},{balance:59},{weekly:[10,50]},{quantity:[11,10]},{total:null}])assert.equal(validateExchange(item,{...good,...change}),false)
+const allow=JSON.parse(fs.readFileSync(new URL('../assets/exchange_whitelist.json',import.meta.url)))
+assert.equal(allow.special[0].name,'契约之刃');assert.equal(allow.family[0].name,'契约之刃')
+for(const [shop,stock,price] of [['special',2,1000],['family',1,500]]){
+ const blade=allow[shop][0]
+ const detail={title:'契约之刃',weekly:[stock,stock],quantity:[1,stock],total:price,balance:1557}
+ assert.ok(validateExchange(blade,detail))
+ assert.equal(validateExchange(blade,{...detail,total:price+1}),false)
+ assert.equal(validateExchange(blade,{...detail,weekly:[10,10]}),false)
+ assert.equal(validateExchange(blade,{...detail,weekly:null}),false)
+}
+assert.equal(validateExchange(allow.family[0],{title:'契约之刃',weekly:[2,2],quantity:[1,2],total:500,balance:1557}),false)
 // The maximum button supplies the affordable quantity; the automation never
 // presses plus/minus or estimates how many units to request.
 for(const [balance,maximum,expectedPurchase] of [[75,2,true],[0,0,false],[20,10,false]]){

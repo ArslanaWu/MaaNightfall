@@ -1,5 +1,5 @@
 import {registerGuiActions} from './gui_actions.mjs'
-import {validatePlan} from './stamina_plan.mjs'
+import {validatePlan,DEFAULT_PLAN} from './stamina_plan.mjs'
 import {ensureMuMu} from './mumu.mjs'
 import {MODULES, MODULE_ORDER, WORK_MODULES, normalizeModules, createExecutionPlan} from './modules.mjs'
 import {registerActions} from './custom_actions.mjs'
@@ -7,6 +7,7 @@ import fs from 'node:fs'
 import {findMaaNode} from './runtime.mjs'
 import path from 'node:path'
 import {selectModuleMenu} from './module_menu.mjs'
+import {runModuleSequence} from './module_runner.mjs'
 import { pathToFileURL } from 'node:url'
 
 const PROJECT_ROOT = path.resolve(import.meta.dirname, '..')
@@ -111,6 +112,10 @@ async function main() {
   const executionPlan = createExecutionPlan(selectedModules)
 
   const planIndex=process.argv.indexOf('--stamina-plan')
+  if(planIndex<0&&selectedModules.includes('stamina')){
+    executionPlan.pipelineOverride.Stamina_OpenFamilyAffairs={recognition:'DirectHit',action:'Custom',custom_action:'StaminaPlan',custom_action_param:{plan:DEFAULT_PLAN},next:'Stamina_ReturnHome'}
+    executionPlan.pipelineOverride.Stamina_ReturnHome={...executionPlan.pipelineOverride.Stamina_ReturnHome,action:'DoNothing'}
+  }
   if(planIndex>=0){
     if(!process.argv[planIndex+1])throw Error('缺少体力计划文件路径')
     const plan=JSON.parse(fs.readFileSync(path.resolve(process.argv[planIndex+1]),'utf8'))
@@ -136,7 +141,7 @@ async function main() {
   const loadJob = resource.post_bundle(RESOURCE_PATH)
   await loadJob.wait()
   if (!loadJob.succeeded) throw new Error(`资源加载失败：${RESOURCE_PATH}`)
-  resource.override_pipeline(executionPlan.pipelineOverride)
+  if(checkOnly)resource.override_pipeline(executionPlan.pipelineOverride)
 
   if (checkOnly) {
     const labels = selectedModules.map((name) => MODULES[name].label).join('、')
@@ -159,15 +164,6 @@ async function main() {
     return
   }
 
-  const tasker = new maa.Tasker()
-  tasker.resource = resource
-  tasker.controller = controller
-  tasker.add_context_sink((_context, message) => {
-    if (message.msg.endsWith('PipelineNode.Starting')) console.log(`[执行] ${message.name}`)
-  })
-
-  if (!tasker.inited) throw new Error('Tasker 初始化失败。')
-
   const executionOrder = [
     ...(selectedModules.includes('start') ? ['start'] : []),
     ...WORK_MODULES.filter((name) => selectedModules.includes(name)),
@@ -178,21 +174,48 @@ async function main() {
     console.log('[MaaYMZX] 未选择“启动游戏”，请确保游戏已经停在主界面。')
   }
   console.log(`[MaaYMZX] 开始执行：${labels}。请不要操作模拟器。`)
-  const taskJob = tasker.post_task(executionPlan.taskEntry)
-  await taskJob.wait()
-  const result = taskJob.get()
-  const completedNodes = result.nodes.map((id) => tasker.node_detail(id))
-  const terminal = selectedModules.includes('close') ? 'SuccessExit' : 'KeepGameOpenFinish'
-  const aborted = completedNodes.some((node) => ['FatalExit', 'AbortTask', 'AbortAfterStopFailure'].includes(node?.name))
-  const succeeded = taskJob.succeeded && !aborted && completedNodes.some((node) => [terminal, 'Poker_Closed'].includes(node?.name) && node.completed)
-  console.log(`[MaaYMZX] 任务状态：${succeeded ? statusName(result.status) : 'Failed'}`)
-  tasker.destroy()
+  async function execute(name) {
+    const stage = createExecutionPlan([name])
+    if(name==='stamina') {
+      stage.pipelineOverride.Stamina_OpenFamilyAffairs=executionPlan.pipelineOverride.Stamina_OpenFamilyAffairs
+      stage.pipelineOverride.Stamina_ReturnHome={...stage.pipelineOverride.Stamina_ReturnHome,action:'DoNothing'}
+    }
+    const tasker=new maa.Tasker()
+    tasker.resource=resource
+    tasker.controller=controller
+    tasker.add_context_sink((_context,message)=>{
+      if(message.msg.endsWith('PipelineNode.Starting'))console.log(`[执行] ${message.name}`)
+    })
+    if(!tasker.inited){tasker.destroy();return {ok:false,unrecoverable:true}}
+    try {
+      console.log(`[模块] 开始：${MODULES[name].label}`)
+      const taskJob=tasker.post_task(stage.taskEntry,stage.pipelineOverride)
+      await taskJob.wait()
+      const result=taskJob.get()
+      const nodes=result.nodes.map(id=>tasker.node_detail(id))
+      const aborted=nodes.some(node=>['FatalExit','AbortTask','AbortAfterStopFailure'].includes(node?.name))
+      const stopped=nodes.some(node=>node?.name==='Poker_Closed'&&node.completed)
+      const terminal=name==='close'?'SuccessExit':'KeepGameOpenFinish'
+      const ok=taskJob.succeeded&&!aborted&&(stopped||nodes.some(node=>node?.name===terminal&&node.completed))
+      console.log(`[模块] ${ok?'完成':'失败'}：${MODULES[name].label}`)
+      if(!ok&&!nodes.some(node=>node?.name==='FatalExit'&&node.completed)){
+        const stop=controller.post_stop_app('com.bmystu.peng.gw');await stop.wait()
+        if(!stop.succeeded)return {ok:false,unrecoverable:true}
+      }
+      return {ok,stopped}
+    }catch(error){
+      console.error(`[模块] ${MODULES[name].label}：${error instanceof Error?error.message:String(error)}`)
+      try{const stop=controller.post_stop_app('com.bmystu.peng.gw');await stop.wait();return {ok:false,unrecoverable:!stop.succeeded}}
+      catch{return {ok:false,unrecoverable:true}}
+    }finally{tasker.destroy()}
+  }
+  const outcome=await runModuleSequence(selectedModules,{execute,log:console.log})
   controller.destroy()
   resource.destroy()
-
-  if (!succeeded) throw new Error('任务未正常完成；详细信息请查看 debug\\maafw.log。')
-  const ending = (selectedModules.includes('close') || completedNodes.some(node => node?.name === 'Poker_Closed')) ? '游戏已关闭。' : '游戏保持开启。'
-  console.log(`[MaaYMZX] 所选模块执行完成，${ending}`)
+  const succeeded=outcome.failed.length===0&&!outcome.aborted
+  console.log(`[MaaYMZX] 任务状态：${succeeded?'Succeeded':'PartialFailure'}`)
+  if(!succeeded){console.error('[MaaYMZX] 失败模块：'+outcome.failed.map(name=>MODULES[name].label).join('、'));process.exitCode=1}
+  else console.log(`[MaaYMZX] 所选模块执行完成，${selectedModules.includes('close')||outcome.stopped?'游戏已关闭。':'游戏保持开启。'}`)
 }
 
 main().catch((error) => {

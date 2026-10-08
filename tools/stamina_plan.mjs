@@ -1,10 +1,17 @@
 import fs from 'node:fs'
+import {StaminaRotation} from './stamina_rotation.mjs'
 import {screen,find,joined,tap,waitFor,home,openAffairs} from './game_flow.mjs'
 export const STAGES=JSON.parse(fs.readFileSync(new URL('../assets/stamina_stages.json',import.meta.url),'utf8'))
+export const DEFAULT_PLAN = [{stage:'party',count:3},{stage:'family_rotation',count:'all'}]
+export async function readStaminaBalance(io){
+ const match=joined(await io.ocr(await io.shot(),[1070,10,200,60])).match(/(\d+)\/(\d+)/)
+ if(!match||Number(match[1])>Number(match[2]))throw Error('无法确认当前体力，未开始扫荡')
+ return Number(match[1])
+}
 export function validatePlan(plan){
  if(!Array.isArray(plan)||!plan.length||plan.length>100)throw Error('体力计划须包含 1 到 100 条')
  return plan.map(row=>{
-  const stage=STAGES.find(x=>x.id===row.stage)
+  const stage=row.stage==='family_rotation'?{id:'family_rotation',name:'家族遗迹轮换',cost:30}:STAGES.find(x=>x.id===row.stage)
   if(!stage)throw Error('未知体力关卡')
   if(row.count!=='all'&&(!Number.isInteger(row.count)||row.count<1||row.count>999))throw Error('次数须为 1 到 999 或 all')
   return {...stage,count:row.count}
@@ -42,18 +49,26 @@ export async function openStaminaStage(io,stage){
  const tier=joined(await io.ocr(await io.shot(),[880,45,115,75],'^X$'))
  if(tier!=='X')throw Error('未确认 X 难度，停止扫荡')
 }
-export async function runStaminaPlan(io,plan,log=console.log,{inspectOnly=false}={}){
+export async function runStaminaPlan(io,plan,log=console.log,{inspectOnly=false,rotation=new StaminaRotation()}={}){
  const rows=validatePlan(plan)
+ let uid,rotationStage
+ if(rows.some(row=>row.id==='family_rotation')){
+  const items=await io.ocr(await io.shot(),[0,670,240,50],'UID.*')
+  uid=joined(items).match(/UID[:：]?(\d+)/i)?.[1]
+  if(!uid)throw Error('无法确认 UID，停止家族遗迹轮换')
+  rotationStage=rotation.next(uid)
+ }
  let batches=0
  while(rows.length){
   if(++batches>1000)throw Error('体力计划超过批次上限')
   const row=rows.shift()
-  await openStaminaStage(io,row)
-  if(inspectOnly){log('[体力计划] 已确认 '+row.name+' X');await home(io);continue}
+  const rotating=row.id==='family_rotation'
+  const stage=rotating?STAGES.find(x=>x.id===rotationStage):row
+  await openStaminaStage(io,stage)
+  if(inspectOnly){log('[体力计划] 已确认 '+stage.name+' X');await home(io);continue}
   const page=await screen(io)
-  const balance=joined(page).match(/(\d+)\/300/)
-  if(!balance)throw Error('无法确认当前体力，未开始扫荡')
-  if(Number(balance[1])<row.cost){log('[体力计划] '+row.name+' 体力不足，跳过');await home(io);continue}
+  const balance=await readStaminaBalance(io)
+  if(balance<row.cost){log('[体力计划] '+row.name+' 体力不足，跳过');await home(io);continue}
   await tap(io,find(page,/^扫荡$/,[850,590,260,100]))
   await waitFor(io,s=>find(s,/扫荡次数/),'扫荡次数')
   await io.click(956,347,400)
@@ -65,7 +80,7 @@ export async function runStaminaPlan(io,plan,log=console.log,{inspectOnly=false}
   }
   if(await readCount()!==count)throw Error('扫荡次数未确认，停止')
   const costText=joined(await io.ocr(await io.shot(),[815,474,80,42],'-?[0-9]+'))
-  if(Math.abs(Number(costText))!==count*row.cost||count*row.cost>Number(balance[1]))throw Error('扫荡消耗校验失败，未提交')
+  if(Math.abs(Number(costText))!==count*row.cost||count*row.cost>balance)throw Error('扫荡消耗校验失败，未提交')
   await tap(io,find(await screen(io),/^扫荡$/,[900,465,100,65]),1200)
   let rewarded=false,finished=false
   for(let i=0;i<24;i++){
@@ -73,11 +88,12 @@ export async function runStaminaPlan(io,plan,log=console.log,{inspectOnly=false}
    if(find(items,/体力不足|购买体力|恢复体力/))throw Error('体力不足或出现购买窗口，停止；不会购买体力')
    if(find(items,/扫荡完成|获得物品/)){rewarded=true;await io.click(640,680,1000);continue}
    if(find(items,/等级提升|属性提升|等级提高/)){await io.click(640,680,1000);continue}
-   if(rewarded&&find(items,new RegExp('^'+row.name+'$'),[880,85,380,100])){finished=true;break}
+   if(rewarded&&find(items,new RegExp('^'+stage.name+'$'),[880,85,380,100])){finished=true;break}
    await io.wait(500)
   }
   if(!finished)throw Error('扫荡结果未确认，停止以避免重复消耗')
-  log('[体力计划] '+row.name+' X × '+count)
+  if(rotating)rotation.complete(uid,stage.id)
+  log('[体力计划] '+stage.name+' X × '+count)
   await home(io)
   if(row.count==='all'||row.count>count)rows.unshift({...row,count:row.count==='all'?'all':row.count-count})
  }

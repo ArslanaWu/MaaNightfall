@@ -73,13 +73,12 @@
         "recognition": "OCR",
         "expected": "任务需求",
         "roi": [430, 380, 800, 190],
-        "next": [
-            "Dispatch_SelectRow1",
-            "Dispatch_SelectRow2",
-            "Dispatch_SelectRow3",
-            "Dispatch_SelectRow4",
-            "Dispatch_Finish"
-        ]
+        "next": "Dispatch_RefreshAndAssign"
+    },
+    "Dispatch_RefreshAndAssign": {
+        "action": "Custom",
+        "custom_action": "DispatchRefreshAndAssign",
+        "next": "Dispatch_Finish"
     },
     "Dispatch_SelectRow1": {
         "action": "Click",

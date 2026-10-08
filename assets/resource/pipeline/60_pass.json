@@ -1,12 +1,81 @@
 {
     "Pass_Open": {
+        "timeout": 8000,
+        "next": [
+            "Pass_CloseUpgrade",
+            "Pass_OpenTasks",
+            "Pass_OpenFromHome"
+        ]
+    },
+    "Pass_CloseUpgrade": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": {
+                    "type": "OCR",
+                    "param": {
+                        "expected": "银幕特供",
+                        "roi": [
+                            130,
+                            160,
+                            220,
+                            90
+                        ]
+                    }
+                }
+            },
+            {
+                "recognition": {
+                    "type": "OCR",
+                    "param": {
+                        "expected": "典藏特供",
+                        "roi": [
+                            900,
+                            160,
+                            300,
+                            100
+                        ]
+                    }
+                }
+            },
+            {
+                "recognition": {
+                    "type": "OCR",
+                    "param": {
+                        "expected": "升级获得",
+                        "roi": [
+                            130,
+                            220,
+                            230,
+                            80
+                        ]
+                    }
+                }
+            }
+        ],
+        "action": "Click",
+        "target": [
+            45,
+            40
+        ],
+        "post_delay": 1200,
+        "max_hit": 3,
+        "next": "Pass_Open"
+    },
+    "Pass_OpenFromHome": {
         "recognition": "TemplateMatch",
         "template": "pass/home_icon.png",
-        "roi": [325, 55, 85, 65],
+        "roi": [
+            325,
+            55,
+            85,
+            65
+        ],
         "threshold": 0.82,
         "action": "Click",
         "post_delay": 1200,
-        "next": "Pass_OpenTasks"
+        "next": "Pass_Open",
+        "max_hit": 3
     },
     "Pass_OpenTasks": {
         "recognition": "OCR",

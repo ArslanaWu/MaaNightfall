@@ -1,6 +1,6 @@
 # Windows 图形界面
 
-发行包解压后，双击根目录的 **MaaNightfall.exe**。启动器会在后台准备环境并打开 GUI，不弹出命令行窗口；失败时会弹出错误提示，日志保存在 `debug/launcher/`。请保留完整目录，不要单独移动 EXE。源码首次使用先执行 `powershell -NoProfile -ExecutionPolicy Bypass -File tools/build_launcher.ps1` 生成启动器，也可以继续使用 `run_gui.cmd`。首次从源码启动会准备 Node、MaaFramework、OCR、MFAAvalonia 以及缺少的 .NET 10 运行库，无须自己安装 Node 或 Python。需要网络，游戏和 MuMu 仍须自行安装并登录。
+发行包解压后，双击根目录的 **MaaNightfall.exe**。启动器会在后台准备环境并打开 GUI，不弹出命令行窗口；失败时会弹出错误提示，日志保存在 `debug/launcher/`。请保留完整目录，不要单独移动 EXE。启动 GUI 时会自动启动所选 MuMu 安卓实例并等待 ADB 就绪；冷启动带出的 MuMu 主界面进程随后会被结束，已运行的实例直接复用。源码首次使用先执行 `powershell -NoProfile -ExecutionPolicy Bypass -File tools/build_launcher.ps1` 生成启动器，也可以继续使用 `run_gui.cmd`。首次从源码启动会准备 Node、MaaFramework、OCR、MFAAvalonia 以及缺少的 .NET 10 运行库，无须自己安装 Node 或 Python。需要网络，游戏和 MuMu 仍须自行安装并登录。
 
 GUI 和命令行共用同一项目目录的 .state，缄默暗门下一次时间和罪恶博弈周限不会因切换入口而重置。请勿同时运行两套游戏任务。原 run_daily.cmd 的空格勾选、上下选择和回车执行保持可用。
 
@@ -12,7 +12,7 @@ GUI 和命令行共用同一项目目录的 .state，缄默暗门下一次时间
 
 需要多条计划时，在 GUI 中通过“添加任务”重复添加“体力计划”，为每条分别配置关卡与次数，再拖动到需要的顺序。消耗可用体力的条目放在这些计划最后。可以修改任务备注来标注用途。GUI 保存这些选项，下次启动继续使用。
 
-默认体力计划是古堡回声 X，消耗可用体力。完整日常仍默认包含一次该计划。
+默认选择“日常：欲望酒会 3 次 → 家族遗迹按天轮换”。先扫荡欲望酒会 X 3 次，再用当天的一种家族遗迹消耗全部剩余体力。地牢血痕、密室残垣、市井焦土、古堡回声每天一种，四天一轮；以 2026-10-09 的地牢血痕为起点，按上海自然日计算，同一天重复运行仍刷同一种。默认日常忽略单关卡的次数设置；账号记录保存在 `.state/stamina-rotation.json`。现有配置中第一个默认关卡选项也改为该日常计划。
 
 命令行也能读取有序计划 JSON，例如：
 
@@ -30,7 +30,7 @@ GUI 和命令行共用同一项目目录的 .state，缄默暗门下一次时间
 runtimes\node\node.exe tools/run_daily.mjs --modules start,stamina --stamina-plan config/stamina_plan.json
 ```
 
-可用 stage：drill 作战演练、money 金钱时代、dock 码头进击、parking 车场突围、park 园区增援、platform 站台攻歼、party 欲望酒会、dungeon 地牢血痕、chamber 密室残垣、city 市井焦土、castle 古堡回声。不传计划时命令行保持原体力流程。
+可用 stage：drill 作战演练、money 金钱时代、dock 码头进击、parking 车场突围、park 园区增援、platform 站台攻歼、party 欲望酒会、dungeon 地牢血痕、chamber 密室残垣、city 市井焦土、castle 古堡回声，另支持 family_rotation 家族遗迹按天轮换。不传计划时命令行使用同一默认日常计划。
 
 ## 更新与发行
 

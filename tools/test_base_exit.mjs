@@ -14,7 +14,7 @@ async function run(label,kind,submit,refresh){
  const override=Object.fromEntries(r.node_list.filter(n=>n.startsWith('Base_')).map(n=>[n,{pre_delay:0,post_delay:0,rate_limit:5,timeout:30}]));
  for(const type of ['First','Second']){
   override['Base_'+type+'StillPresent']={recognition:'DirectHit'};
-  override['Base_'+type+'Submit']={recognition:'DirectHit',enabled:submit,max_hit:2};
+  override['Base_'+type+'Submit']={recognition:'DirectHit',target:[200,550],enabled:submit,max_hit:2};
   override['Base_'+type+'Refresh']={recognition:'DirectHit',enabled:refresh,max_hit:2};
  }
  override.Base_ReturnHome={recognition:'DirectHit',next:'Dispatch_OpenBusiness'};

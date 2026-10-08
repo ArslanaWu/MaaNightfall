@@ -10,7 +10,7 @@ maa.Global.stdout_level='Error';maa.Global.log_dir=path.join(root,'.analysis/ext
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'ymzx-actions-'));fs.mkdirSync(path.join(temp,'assets'))
 fs.copyFileSync(path.join(root,'assets/task_policies.json'),path.join(temp,'assets/task_policies.json'))
 const allow=JSON.parse(fs.readFileSync(path.join(root,'assets/exchange_whitelist.json')))
-fs.writeFileSync(path.join(temp,'assets/exchange_whitelist.json'),JSON.stringify({special:[allow.special[0]],family:[allow.family[0]]}))
+fs.writeFileSync(path.join(temp,'assets/exchange_whitelist.json'),JSON.stringify({special:[allow.special.find(x=>x.name==='先锋晋升许可Ⅱ')],family:[allow.family.find(x=>x.name==='欲望特调Ⅱ')]}))
 const png=f=>{const b=fs.readFileSync(path.join(frames,f+'.png'));return b.buffer.slice(b.byteOffset,b.byteOffset+b.byteLength)}
 let failures=0
 async function run(name,entry,initial,clickSteps,{end,skip=false,poker=false}={}){

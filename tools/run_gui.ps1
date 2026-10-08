@@ -4,6 +4,10 @@ param([switch]$PrepareOnly)
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 . (Join-Path $PSScriptRoot 'local_mumu.ps1')
+if (!$PrepareOnly) {
+    . (Join-Path $PSScriptRoot 'mumu.ps1')
+    Start-MuMuInstance -ManagerPath $env:MAANIGHTFALL_MUMU_MANAGER -Instance ([int]$env:MAANIGHTFALL_MUMU_INSTANCE) | Out-Null
+}
 $guiPath = Join-Path $projectRoot 'MFAAvalonia.exe'
 if (!$PrepareOnly -and (Get-Process MFAAvalonia -ErrorAction SilentlyContinue | Where-Object { $_.Path -eq $guiPath })) {
     Start-Process -FilePath $guiPath -WorkingDirectory $projectRoot

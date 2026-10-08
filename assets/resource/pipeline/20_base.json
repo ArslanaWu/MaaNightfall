@@ -6,12 +6,15 @@
         "action": "Click",
         "target": [940, 645],
         "post_delay": 1000,
-        "next": ["Base_CollectProduction", "Base_OpenOrders"]
+        "next": "Base_CheckBenefits"
+    },
+    "Base_CheckBenefits": {
+        "next": ["Base_CollectProduction", "Base_PatrolSurprise", "Base_OpenOrders"]
     },
     "Base_CollectProduction": {
         "recognition": "OCR",
-        "expected": ["一键领取", "键领取"],
-        "roi": [1080, 410, 200, 160],
+        "expected": ["^一键领取$", "^键领取$", "^收取据点物品$"],
+        "roi": [1080, 280, 200, 170],
         "action": "Click",
         "post_delay": 800,
         "next": "Base_RestartProduction"
@@ -21,20 +24,44 @@
         "expected": "再次生产",
         "action": "Click",
         "post_delay": 800,
-        "next": ["Base_CloseTargetValue", "Base_OpenOrders"]
+        "next": ["Base_CloseTargetValue", "Base_CheckBenefits"]
     },
     "Base_CloseTargetValue": {
         "recognition": "OCR",
         "expected": "目标价值",
         "action": "Click",
         "target": [640, 650],
-        "next": "Base_OpenOrders"
+        "next": "Base_CheckBenefits"
+    },
+    "Base_PatrolSurprise": {
+        "recognition": "OCR",
+        "expected": "^巡逻惊喜$",
+        "roi": [1080, 220, 200, 240],
+        "action": "Click",
+        "max_hit": 1,
+        "post_delay": 1000,
+        "next": "Base_HandlePatrolReward"
+    },
+    "Base_HandlePatrolReward": {
+        "next": ["Base_ClosePatrolReward", "Base_OpenOrders"],
+        "timeout": 10000
+    },
+    "Base_ClosePatrolReward": {
+        "recognition": "OCR",
+        "expected": "获得物品",
+        "roi": [400, 50, 480, 220],
+        "action": "Click",
+        "target": [640, 680],
+        "max_hit": 3,
+        "post_delay": 1000,
+        "next": "Base_HandlePatrolReward"
     },
     "Base_OpenOrders": {
         "recognition": "TemplateMatch",
         "template": "base/order_icon.png",
         "roi": [750, 500, 220, 200],
         "action": "Click",
+        "target": [850, 610],
         "post_delay": 800,
         "next": "Base_OrderProcess"
     },

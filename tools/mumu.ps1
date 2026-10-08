@@ -47,12 +47,34 @@ function Get-MuMuInstance {
 
 function Wait-MuMuTick { Start-Sleep -Seconds 2 }
 
+function Get-MuMuMainProcesses {
+    return @(Get-CimInstance Win32_Process -Filter "Name = 'MuMuNxMain.exe'")
+}
+
+function Get-MuMuDeviceParentId {
+    param([int]$DevicePid)
+    $device = Get-CimInstance Win32_Process -Filter "ProcessId = $DevicePid"
+    if ($device -and $device.Name -eq 'MuMuNxDevice.exe') { return [int]$device.ParentProcessId }
+    return 0
+}
+
+function Stop-LaunchedMuMuMain {
+    param([int]$DevicePid, [int[]]$ExistingPids)
+    $launcherPid = Get-MuMuDeviceParentId $DevicePid
+    if ($launcherPid -le 0) { throw "Cannot identify the launcher of MuMu device PID $DevicePid." }
+    foreach ($process in @(Get-MuMuMainProcesses)) {
+        if ($process.ProcessId -in $ExistingPids -or
+            ($process.ParentProcessId -ne $DevicePid -and $process.ParentProcessId -ne $launcherPid)) { continue }
+        Stop-Process -Id $process.ProcessId -Force -ErrorAction Stop
+    }
+}
 function Start-MuMuInstance {
     param([string]$ManagerPath, [ValidateRange(0,65535)][int]$Instance = 0, [ValidateRange(0,600)][int]$TimeoutSeconds = 120)
     $manager = Find-MuMuManager $ManagerPath
     $info = Get-MuMuInstance $manager $Instance
     $launched = $false
     if (!$info.is_process_started) {
+        $existingMainPids = @(Get-MuMuMainProcesses | ForEach-Object { [int]$_.ProcessId })
         $result = Invoke-MuMuManager $manager @('control','--vmindex',"$Instance",'launch')
         if ($result -and $result.Trim().StartsWith('{')) {
             $launchResult = $result | ConvertFrom-Json
@@ -66,6 +88,10 @@ function Start-MuMuInstance {
         if ($timer.Elapsed.TotalSeconds -ge $TimeoutSeconds) { throw "MuMu instance $Instance did not become ready within $TimeoutSeconds seconds." }
         Wait-MuMuTick
         $info = Get-MuMuInstance $manager $Instance
+    }
+    if ($launched) {
+        if ([int]$info.pid -le 0) { throw "MuMu instance $Instance did not return a device PID; cannot close its main process safely." }
+        Stop-LaunchedMuMuMain -DevicePid ([int]$info.pid) -ExistingPids $existingMainPids
     }
     $hostAddress = if ($info.adb_host_ip) { [string]$info.adb_host_ip } else { '127.0.0.1' }
     return [pscustomobject]@{

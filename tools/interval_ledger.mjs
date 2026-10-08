@@ -11,6 +11,16 @@ export class IntervalLedger {
   return data
  }
  due(uid,key,days){
+  const anchored=days&&typeof days==='object'
+  if(anchored){
+   const anchor=Date.parse(days.anchor)
+   if(!Number.isInteger(days.days)||days.days<1||!Number.isFinite(anchor))throw Error('周期起始时间或天数无效')
+   const now=this.now()
+   if(now<anchor)return false
+   const start=anchor+Math.floor((now-anchor)/(days.days*DAY_MS))*days.days*DAY_MS
+   const last=this.read()[uid]?.[key]?.completedAt
+   return !last||Date.parse(last)<start
+  }
   if(!Number.isInteger(days)||days<1)throw Error('周期天数必须是正整数')
   const record=this.read()[uid]?.[key]
   if(record?.nextEligibleAt!==undefined)return this.now()>=Date.parse(record.nextEligibleAt)

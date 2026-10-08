@@ -7,7 +7,8 @@ import {STAGES,validatePlan,requestedCount} from './stamina_plan.mjs'
 const ui=buildInterface()
 assert.deepEqual(ui.task.map(t=>t.name),MODULE_ORDER)
 assert.ok(ui.task.every(t=>t.default_check))
-assert.equal(ui.option.stamina_stage.cases.length,11)
+assert.equal(ui.option.stamina_stage.cases.length,12)
+assert.equal(ui.option.stamina_stage.default_case,'daily')
 assert.equal(ui.github,'https://github.com/ArslanaWu/MaaNightfall')
 for(const t of ui.task){assert.ok(buildGuiPipeline()[t.entry]);assert.deepEqual(buildGuiPipeline()[t.entry].on_error,[])}
 const overrides=[ui.option.stamina_stage.cases[1].pipeline_override,ui.option.stamina_mode.cases[1].pipeline_override,ui.option.stamina_count.pipeline_override]

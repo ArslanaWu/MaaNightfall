@@ -7,7 +7,7 @@ export function buildInterface({version=fs.readFileSync(new URL('../VERSION',imp
  const task=MODULE_ORDER.map(name=>({
   name,label:name==='stamina'?'体力计划':MODULES[name].label,
   entry:name==='stamina'?'Gui_Stamina':'Gui_'+name,default_check:true,
-  ...(name==='stamina'?{description:'每条计划选择一个 X 难度关卡及次数。可通过添加任务重复添加体力计划，拖动排序；消耗剩余体力的条目请放在最后。不购买体力。',option:['stamina_stage','stamina_mode']}:{})
+  ...(name==='stamina'?{description:'默认先执行欲望酒会 X 3 次，再用当天的家族遗迹消耗全部剩余体力。按天依次轮换地牢血痕、密室残垣、市井焦土、古堡回声，四天一轮，同一天保持同一种。默认日常忽略下方次数；单关卡可自选次数。不购买体力。',option:['stamina_stage','stamina_mode']}:{})
  }))
  return {
   interface_version:2,name:'MaaNightfall',description:'夜幕之下日常助手 · 自用，可能不会稳定更新；使用风险自行承担。',
@@ -19,7 +19,7 @@ export function buildInterface({version=fs.readFileSync(new URL('../VERSION',imp
   agent:{child_exec:'{PROJECT_DIR}/'+(assetRoot==='.'?'../':'')+'runtimes/node/node.exe',child_args:['{PROJECT_DIR}/'+toolRoot+'/agent_server.mjs']},
   task,
   option:{
-   stamina_stage:{type:'select',label:'关卡（难度 X）',default_case:'castle',cases:[STAGES.find(s=>s.id==='castle'),...STAGES.filter(s=>s.id!=='castle')].map(s=>({name:s.id,label:s.name,pipeline_override:{Gui_StaminaStage:{attach:{stage:s.id}}}}))},
+   stamina_stage:{type:'select',label:'关卡（难度 X）',default_case:'daily',cases:[{id:'daily',name:'日常：欲望酒会 3 次 → 家族遗迹按天轮换'},...STAGES].map(s=>({name:s.id,label:s.name,pipeline_override:{Gui_StaminaStage:{attach:{stage:s.id}}}}))},
    stamina_mode:{type:'select',label:'执行次数',default_case:'all',cases:[
     {name:'all',label:'消耗可用体力',pipeline_override:{Gui_StaminaMode:{attach:{mode:'all'}}}},
     {name:'count',label:'指定次数',option:['stamina_count'],pipeline_override:{Gui_StaminaMode:{attach:{mode:'count'}}}}
@@ -33,7 +33,7 @@ export function buildGuiPipeline(){
  return Object.fromEntries([
  ...MODULE_ORDER.filter(x=>x!=='stamina').map(module=>['Gui_'+module,{action:'Custom',custom_action:'GuiModule',custom_action_param:{module},on_error:[]}]),
  ['Gui_Stamina',{action:'Custom',custom_action:'StaminaPlan',on_error:[]}],
- ['Gui_StaminaStage',{attach:{stage:'castle'},on_error:[]}],
+ ['Gui_StaminaStage',{attach:{stage:'daily'},on_error:[]}],
  ['Gui_StaminaMode',{attach:{mode:'all'},on_error:[]}],
  ['Gui_StaminaCount',{attach:{count:1},on_error:[]}]
  ])

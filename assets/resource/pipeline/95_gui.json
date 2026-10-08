@@ -118,7 +118,7 @@
   },
   "Gui_StaminaStage": {
     "attach": {
-      "stage": "castle"
+      "stage": "daily"
     },
     "on_error": []
   },
