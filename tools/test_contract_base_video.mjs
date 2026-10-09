@@ -43,4 +43,10 @@ await replay('Base_CheckBenefits',path.join(historical,'025_Base_CollectProducti
 await replay('Base_CheckBenefits',room,[[1180,424,reward,45],[640,680,room],[840,615,room,40]],()=>true)
 await replay('Base_CheckBenefits',path.join(frames,'base-no-benefits.png'),[[840,615,room,40]],()=>true)
 await replay('Fixture',path.join(historical,'013_Stamina_OpenStage.png'),[],async io=>{assert.equal(await readStaminaBalance(io),189);return true})
+// The 10/09 run still displayed the collect label after restarting production.
+// Do not click it a second time: it can open the building's production menu.
+await replay('Base_CheckBenefits',path.join(historical,'025_Base_CollectProduction.png'),[[1188,426,path.join(historical,'026_Base_RestartProduction.png'),45],[792,611,path.join(historical,'025_Base_CollectProduction.png'),40],[1180,330,reward,45],[640,680,room],[840,615,room,40]],()=>true)
+const errors=path.join(root,'debug/on_error')
+await replay('Base_HandleProductionResult',path.join(errors,'2026.10.09-10.00.00.286_Base_CollectProduction.png'),[[45,40,room],[1180,424,reward,45],[640,680,room],[840,615,room,40]],()=>true)
+await replay('Fixture',path.join(errors,'2026.10.09-09.58.50.78_Stamina_OpenFamilyAffairs.png'),[],async io=>{assert.equal(await readStaminaBalance(io),270);return true})
 resource.destroy();process.exit(0)

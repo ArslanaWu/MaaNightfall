@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import {runStaminaPlan,DEFAULT_PLAN} from './stamina_plan.mjs'
+import {runStaminaPlan,DEFAULT_PLAN,readStaminaBalance} from './stamina_plan.mjs'
 import {StaminaRotation} from './stamina_rotation.mjs'
 const hit=(text,x,y,w=100,h=30)=>({text,box:[x,y,w,h]})
 function fakeGame(balance,{wrongCost=false,noReward=false}={}){
@@ -49,6 +49,15 @@ function fakeGame(balance,{wrongCost=false,noReward=false}={}){
  }
 }
 const run=async(game,plan)=>runStaminaPlan(game.io,plan,()=>{})
+for(const [value,expected] of [['270 / 240 +',270],['240/240',240],['0/240',0]]){
+ assert.equal(await readStaminaBalance({shot:async()=>null,ocr:async()=>[hit(value,1110,25)]}),expected)
+}
+for(const value of ['无法识别','270/0','9007199254740992/240']){
+ await assert.rejects(readStaminaBalance({shot:async()=>null,ocr:async()=>[hit(value,1110,25)]}),/无法确认当前体力/)
+}
+let overflow=fakeGame(270)
+await run(overflow,[{stage:'drill',count:'all'}])
+assert.deepEqual(overflow.swept.map(x=>x.quantity),[10,10,7])
 let game=fakeGame(126)
 await run(game,[{stage:'drill',count:20}])
 assert.deepEqual(game.swept.map(x=>x.quantity),[10,2])

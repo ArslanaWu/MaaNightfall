@@ -5,7 +5,7 @@ export const STAGES=JSON.parse(fs.readFileSync(new URL('../assets/stamina_stages
 export const DEFAULT_PLAN = [{stage:'party',count:3},{stage:'family_rotation',count:'all'}]
 export async function readStaminaBalance(io){
  const match=joined(await io.ocr(await io.shot(),[1070,10,200,60])).match(/(\d+)\/(\d+)/)
- if(!match||Number(match[1])>Number(match[2]))throw Error('无法确认当前体力，未开始扫荡')
+ if(!match||!Number.isSafeInteger(Number(match[1]))||!Number.isSafeInteger(Number(match[2]))||Number(match[2])<=0)throw Error('无法确认当前体力，未开始扫荡')
  return Number(match[1])
 }
 export function validatePlan(plan){

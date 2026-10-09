@@ -16,21 +16,42 @@
         "expected": ["^一键领取$", "^键领取$", "^收取据点物品$"],
         "roi": [1080, 280, 200, 170],
         "action": "Click",
+        "max_hit": 1,
         "post_delay": 800,
-        "next": "Base_RestartProduction"
+        "next": "Base_HandleProductionResult"
+    },
+    "Base_HandleProductionResult": {
+        "next": ["Base_RestartProduction", "Base_CloseTargetValue", "Base_CloseProductionMenu", "Base_ProductionReturned"]
     },
     "Base_RestartProduction": {
         "recognition": "OCR",
         "expected": "再次生产",
         "action": "Click",
+        "max_hit": 1,
         "post_delay": 800,
-        "next": ["Base_CloseTargetValue", "Base_CheckBenefits"]
+        "next": "Base_HandleProductionResult"
     },
     "Base_CloseTargetValue": {
         "recognition": "OCR",
         "expected": "目标价值",
         "action": "Click",
         "target": [640, 650],
+        "next": "Base_HandleProductionResult"
+    },
+    "Base_CloseProductionMenu": {
+        "recognition": "OCR",
+        "expected": "^制作清单$",
+        "roi": [900, 70, 260, 90],
+        "action": "Click",
+        "target": [45, 40],
+        "max_hit": 1,
+        "post_delay": 800,
+        "next": "Base_ProductionReturned"
+    },
+    "Base_ProductionReturned": {
+        "recognition": "TemplateMatch",
+        "template": "base/order_icon.png",
+        "roi": [750, 500, 220, 200],
         "next": "Base_CheckBenefits"
     },
     "Base_PatrolSurprise": {
